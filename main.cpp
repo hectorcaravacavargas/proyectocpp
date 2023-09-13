@@ -157,36 +157,16 @@ public:
                 siguiente = actual->sig;
 
                 if (actual->edad > siguiente->edad) {
-                    // Intercambiar los valores de los nodos
-                    std::string temp_nombre = actual->nombre;
-                    std::string temp_apellido = actual->apellido;
-                    int temp_edad = actual->edad;
-                    std::string temp_tipoContrato = actual->tipoContrato;
-                    float temp_salarioBase = actual->salarioBase;
-                    float temp_complementosSalariales = actual->complementosSalariales;
-                    std::string temp_categoria = actual->categoria;
-                    std::string temp_sector = actual->sector;
-                    Empleado* temp_jefe = actual->jefe;
-
-                    actual->nombre = siguiente->nombre;
-                    actual->apellido = siguiente->apellido;
-                    actual->edad = siguiente->edad;
-                    actual->tipoContrato = siguiente->tipoContrato;
-                    actual->salarioBase = siguiente->salarioBase;
-                    actual->complementosSalariales = siguiente->complementosSalariales;
-                    actual->categoria = siguiente->categoria;
-                    actual->sector = siguiente->sector;
-                    actual->jefe = siguiente->jefe;
-
-                    siguiente->nombre = temp_nombre;
-                    siguiente->apellido = temp_apellido;
-                    siguiente->edad = temp_edad;
-                    siguiente->tipoContrato = temp_tipoContrato;
-                    siguiente->salarioBase = temp_salarioBase;
-                    siguiente->complementosSalariales = temp_complementosSalariales;
-                    siguiente->categoria = temp_categoria;
-                    siguiente->sector = temp_sector;
-                    siguiente->jefe = temp_jefe;
+                    // Intercambiar los nodos usando la función swap
+                    std::swap(actual->nombre, siguiente->nombre);
+                    std::swap(actual->apellido, siguiente->apellido);
+                    std::swap(actual->edad, siguiente->edad);
+                    std::swap(actual->tipoContrato, siguiente->tipoContrato);
+                    std::swap(actual->salarioBase, siguiente->salarioBase);
+                    std::swap(actual->complementosSalariales, siguiente->complementosSalariales);
+                    std::swap(actual->categoria, siguiente->categoria);
+                    std::swap(actual->sector, siguiente->sector);
+                    std::swap(actual->jefe, siguiente->jefe);
 
                     intercambio = true;
                 }
