@@ -359,3 +359,59 @@ public:
     }
 
 };
+
+int main() {
+    // EMPLEADOS METIDOS POR MEDIO DE LA CLASE;
+    Empleado empleado1("Juan", "Perez", 30, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+
+    // FUNCION AGREGAR EMPLEADOS;
+    ListEmpleados empleados;
+
+    empleados.agregarEmpleados("Juan", "Perez", 30, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+    empleados.agregarEmpleados("Ana", "Gomez", 47, "Hora", 15.0, 100.0, "Operario", "Produccion", &empleado1);
+    empleados.agregarEmpleados("Pedro", "Gonzalez", 35, "Hora", 15.0, 100.0, "Operario", "Produccion", nullptr);
+    empleados.agregarEmpleados("Maria", "Rodriguez", 12, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+
+    // FUNCION IMPRIMIR INFORMACION DE LOS EMPLEADOS
+    std::cout << "LISTA NORMAL CON TODO INSERTADO: \n";
+    empleados.imprimirInformacion();
+    std::cout << "\n";
+
+    // BUSCANDO MODIFICAR UN EMPLEADO;
+    std::cout << "LISTA CON UN EMPLEADO MODIFICADO: \n";
+    Empleado nuevoEmpleado("Hector", "Caravaca", 70, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+    empleados.modificarEmpleado("Juan", "Perez", nuevoEmpleado);
+
+    // MOSTRAR LOS NUEVOS RESULTADOS
+    empleados.imprimirInformacion();
+
+    // ELIMINAR UN EMPLEADO
+    std::cout << "LISTA CON UN EMPLEADO ELIMINADO: \n";
+    empleados.eliminarEmpleado("Pedro", "Gonzalez");
+
+    // MOSTRAR LOS NUEVOS RESULTADOS
+    empleados.imprimirInformacion();
+
+    // ORDENAR POR EDAD
+    std::cout << "LISTA ORDENADA POR EDAD: \n";
+    empleados.ordenarPorEdad();
+
+    // MOSTRAR LA LISTA ORDENADA
+    empleados.imprimirInformacion();
+
+    // ORDENAR POR APELLIDOS
+    std::cout << "LISTA ORDENADA POR APELLIDOS: \n";
+    empleados.ordenarPorApellidos();
+
+    // MOSTRAR LA LISTA ORDENADA
+    empleados.imprimirInformacion();
+
+    // CONSULTAR SALARIO
+    std::cout << "CONSULTAR SALARIO: \n";
+    ConsultarSalario consulta(50, 0, false, false, true, "Supervisor", "Jornada Completa");
+
+    // MOSTRAR EL SALARIO
+    empleados.consultarSalario(consulta);
+
+    return 0;
+}
