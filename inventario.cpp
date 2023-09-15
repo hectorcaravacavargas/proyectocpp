@@ -60,8 +60,8 @@ public:
         std::cin >> cantidad;
         this->aumentarInventario(nombre, cantidad);     // Llamada a la funcion privada
     }
-    
-    void mostrarInventario() const { // Funcion para mostrar inventario por categoria 
+
+    void mostrarInventario() const { // Funcion para mostrar inventario por categoria
         // Mostrar las categorias
         std::cout << "REVISION DE INVENTARIO" << std::endl;
         std::cout << " " << std::endl;
@@ -101,7 +101,7 @@ public:
             std::cout << "Opcion invalida" << std::endl;
             return;
         }
-        
+
         std::system("cls");      // Limpiar la pantalla
 
         // Formato para mostrar el inventario
@@ -122,7 +122,7 @@ private:
     Objeto* primero;
 
     void aumentarInventario(const std::string& nombre, int cantidad) { // Funcion privada para aumentar el inventario ya existente
-        Objeto* actual = primero; 
+        Objeto* actual = primero;
         while (actual) {
             if (actual->getNombre() == nombre) {                       // Si el nombre del objeto es igual al nombre ingresado
                 actual->setCantidad(actual->getCantidad() + cantidad); // Aumentar la cantidad
@@ -200,11 +200,11 @@ int main() {
 
         std::cout << "Ingrese el nombre del objeto: ";
         std::cin.ignore();                                     // Ignora el carácter de nueva línea anterior
-       
+
         std::getline(std::cin, nombre);                        // Leer linea completa
         std::cout << "Ingrese la categoria: ";
         std::cin >> categoria;                                 // Leer categoria
-        std::cout << "Ingrese la cantidad: "; 
+        std::cout << "Ingrese la cantidad: ";
         std::cin >> cantidad;                                  // Leer cantidad
 
         inventario.agregarObjeto(nombre, categoria, cantidad); // Llamada a la funcion para agregar un nuevo objeto
@@ -228,7 +228,7 @@ int main() {
     {
         std::cout << "Opcion invalida" << std::endl;
     }
-    
+
 
 
     return 0;
