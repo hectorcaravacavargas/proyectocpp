@@ -48,6 +48,8 @@ public:
         primero = nuevoObjeto;
     }
 
+    friend bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada);
+
     void aumentarInventario() { // Funcion publica para aumentar el inventario ya existente
         // Variables locales
         std::string nombre;
@@ -139,14 +141,15 @@ private:
 
 };
 
-int main() {
-    Inventario inventario;
+Inventario inventario;
+
+void cargarInventario(){ // Funcion para cargar el inventario con objetos
 
     // Agregar objetos al inventario (Estructuracion del chasis)
     inventario.agregarObjeto("Puertas", "Chasis", 8);
     inventario.agregarObjeto("Largueros", "Chasis", 7);
     inventario.agregarObjeto("Travesanos", "Chasis", 10);
-    inventario.agregarObjeto("Paneles Laterales", "Chasis", 8);
+    inventario.agregarObjeto("Laterales", "Chasis", 8);
     inventario.agregarObjeto("Refuerzos", "Chasis", 8);
 
     // Agregar objetos al inventario (Implementacion Mecanica)
@@ -171,65 +174,94 @@ int main() {
     inventario.agregarObjeto("Asientos", "Acabados", 15);
     inventario.agregarObjeto("Volante", "Acabados", 7);
     inventario.agregarObjeto("Tablero", "Acabados", 6);
-    inventario.agregarObjeto("Pintura", "Acabados", 30);
+    inventario.agregarObjeto("Pintura-Roja", "Acabados", 12);
+    inventario.agregarObjeto("Pintura-Negra", "Acabados", 12);
+    inventario.agregarObjeto("Pintura-Azul", "Acabados", 12);
     inventario.agregarObjeto("Cristales", "Acabados", 20);
     inventario.agregarObjeto("Espejos", "Acabados", 16);
+}
 
-    // Menu de opciones para el inventario
-    int opcion;
-    std::cout << "MENU DE OPCIONES DE INVENTARIO" << std::endl;
-    std::cout << " " << std::endl;
+bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada) {
+    Objeto* actual = inventario.primero;
+    while (actual) {
+        if (actual->getNombre() == nombre) { 
+            if (actual->getCantidad() >= cantidadUtilizada) {
+                actual->setCantidad(actual->getCantidad() - cantidadUtilizada);
+                std::cout << "Se gastaron " << cantidadUtilizada << " " << nombre << std::endl;
+                return true; // Se restó la cantidad con éxito
+            } else {
+                int faltantes = cantidadUtilizada - actual->getCantidad();
+                int faltantesAbs = std::abs(faltantes);
+                std::cout << "Falta " << faltantesAbs << " " << nombre << std::endl;
+                return false; // No se pudo restar debido a cantidad insuficiente
+            }
+        }
+        actual = actual->getSiguiente();
+    }
+    std::cout << "No se encontro " << nombre << std::endl;
+    return false; // El objeto no se encontró en la lista
+}
 
-    std::cout << "1. Agregar un nuevo objeto" << std::endl;
-    std::cout << "2. Aumentar inventario" << std::endl;
-    std::cout << "3. Mostrar inventario" << std::endl;
-    std::cout << "4. Salir" << std::endl;
-    std ::cout << " " << std::endl;
+void mainInventario(){// Menu de opciones para el inventario
+    bool salir = false;
 
-    std::cout << "Ingrese la opcion: ";
-    std::cin >> opcion;
-
-    // Limpiar la pantalla
-    std::system("cls");
-
-    if (opcion == 1)
-    {// Variables locales para la crear un nuevo objeto
-        std::string nombre;
-        std::string categoria;
-        int cantidad;
-
-        std::cout << "Ingrese el nombre del objeto: ";
-        std::cin.ignore();                                     // Ignora el carácter de nueva línea anterior
-
-        std::getline(std::cin, nombre);                        // Leer linea completa
-        std::cout << "Ingrese la categoria: ";
-        std::cin >> categoria;                                 // Leer categoria
-        std::cout << "Ingrese la cantidad: ";
-        std::cin >> cantidad;                                  // Leer cantidad
-
-        inventario.agregarObjeto(nombre, categoria, cantidad); // Llamada a la funcion para agregar un nuevo objeto
-
+    do
+    {
+        int opcion;
+        std::cout << "========================================" << std::endl;
+        std::cout << "|    MENU DE OPCIONES DE INVENTARIO    |" << std::endl;
+        std::cout << "========================================" << std::endl;
         std::cout << " " << std::endl;
-        std::cout << "Objeto agregado correctamente" << std::endl;
-    }
-    else if (opcion == 2)
-    {
-        inventario.aumentarInventario();                       // Llamada a la funcion para aumentar el inventario
-    }
-    else if (opcion == 3)
-    {
-        inventario.mostrarInventario();                        // Llamada a la funcion para mostrar el inventario
-    }
-    else if (opcion == 4)
-    {
-        /* code */
-    }
-    else
-    {
-        std::cout << "Opcion invalida" << std::endl;
-    }
 
+        std::cout << "1. Agregar un nuevo objeto" << std::endl;
+        std::cout << "2. Aumentar inventario" << std::endl;
+        std::cout << "3. Mostrar inventario" << std::endl;
+        std::cout << "4. Salir" << std::endl;
+        std ::cout << " " << std::endl;
 
+        std::cout << "Ingrese la opcion: ";
+        std::cin >> opcion;
 
-    return 0;
+        // Limpiar la pantalla
+        std::system("cls");
+
+        if (opcion == 1)
+        {// Variables locales para la crear un nuevo objeto
+            std::string nombre;
+            std::string categoria;
+            int cantidad;
+
+            std::cout << "Ingrese el nombre del objeto: ";
+            std::cin.ignore();                                     // Ignora el carácter de nueva línea anterior
+
+            std::getline(std::cin, nombre);                        // Leer linea completa
+            std::cout << "Ingrese la categoria: ";
+            std::cin >> categoria;                                 // Leer categoria
+            std::cout << "Ingrese la cantidad: ";
+            std::cin >> cantidad;                                  // Leer cantidad
+
+            inventario.agregarObjeto(nombre, categoria, cantidad); // Llamada a la funcion para agregar un nuevo objeto
+
+            std::cout << " " << std::endl;
+            std::cout << "Objeto agregado correctamente" << std::endl;
+        }
+        else if (opcion == 2)
+        {
+            inventario.aumentarInventario();                       // Llamada a la funcion para aumentar el inventario
+        }
+        else if (opcion == 3)
+        {
+            inventario.mostrarInventario();                        // Llamada a la funcion para mostrar el inventario
+        }
+        else if (opcion == 4)
+        {
+            salir = true;                                          // Salir del menu
+        }
+        else
+        {
+            std::cout << "Opcion invalida" << std::endl;
+        }
+        
+    } while (!salir);
+    
 }

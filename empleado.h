@@ -360,7 +360,7 @@ public:
 
 };
 
-int main() {
+void mainEmpleado (){
     // EMPLEADOS METIDOS POR MEDIO DE LA CLASE;
     Empleado empleado1("Juan", "Perez", 30, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
 
@@ -412,6 +412,4 @@ int main() {
 
     // MOSTRAR EL SALARIO
     empleados.consultarSalario(consulta);
-
-    return 0;
 }
