@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 // NOMBRE DE LA EMPRESA: LuxeHeJos SA
 
@@ -98,6 +99,10 @@ public:
         return sig;
     }
 
+    Empleado* getAnterior() const {
+        return ant;
+    }
+
     // METODOS SETTERS
     void setNombre(const std::string& _nombre) {
         nombre = _nombre;
@@ -143,6 +148,10 @@ public:
         sig = _sig;
     }
 
+    void setAnterior(Empleado* _ant) {
+        ant = _ant;
+    }
+
     // METODO IMPRIMIR INFORMACION DEL EMPLEADO
     void imprimirInformacion() {
         std::cout << "Nombre: " << nombre << std::endl;
@@ -176,14 +185,16 @@ public:
 
     // PUNTERO SIGUIENTE
     Empleado *sig = nullptr;
+    Empleado *ant = nullptr;
 };
 
 class ListEmpleados {
 private:
     Empleado* inicio;
+    Empleado* fin;
 
 public:
-    ListEmpleados() : inicio(nullptr) {}
+    ListEmpleados() : inicio(nullptr), fin(nullptr) {}
 
     // METODO PARA INSERTAR EMPLEADOS
     void agregarEmpleados(std::string nombre, std::string apellido, int _edad, std::string _tipoContrato, float _salarioBase,
@@ -264,25 +275,29 @@ public:
     // METODO PARA ELIMINAR EMPLEADOS;
     void eliminarEmpleado(std::string nombre, std::string apellido) {
         Empleado* aux = inicio;
-        Empleado* anterior = nullptr;
 
         while (aux != nullptr) {
             if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
-                if (anterior == nullptr) {
-                    inicio = aux->getSig();
+                Empleado* anterior = aux->getAnterior();
+                Empleado* siguiente = aux->getSig();
+
+                if (anterior != nullptr) {
+                    anterior->setSig(siguiente);
                 } else {
-                    anterior->setSig(aux->getSig());
+                    inicio = siguiente;
+                }
+
+                if (siguiente != nullptr) {
+                    siguiente->setAnterior(anterior);
                 }
 
                 std::cout << "Empleado " << nombre << " " << apellido << " eliminado exitosamente." << std::endl;
 
                 // Eliminar la instancia de empleado para liberar memoria
                 delete aux;
-
                 return;
             }
 
-            anterior = aux;
             aux = aux->getSig();
         }
 
@@ -390,22 +405,27 @@ void mostrarMenu() {
 
     do
     {
-        std::cout << "Menú de Empleados" << std::endl;
+        std::cout << "========================================" << std::endl;
+        std::cout << "|             MENU EMPLEADOS           |" << std::endl;
+        std::cout << "========================================" << std::endl;
+        std::cout << " " << std::endl;
         std::cout << "1. Agregar Empleado" << std::endl;
         std::cout << "2. Modificar Empleado" << std::endl;
         std::cout << "3. Eliminar Empleado" << std::endl;
         std::cout << "4. Ordenar por Edad" << std::endl;
         std::cout << "5. Ordenar por Apellidos" << std::endl;
         std::cout << "6. Consultar Salario" << std::endl;
-        std::cout << "7. Mostrar Información de Empleados" << std::endl;
+        std::cout << "7. Mostrar Informacion de Empleados" << std::endl;
         std::cout << "8. Salir" << std::endl;
+        std::cout << " " << std::endl;
 
         int opcion;
-        std::cout << "Elija una opción: ";
+        std::cout << "Elija una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
             case 1:
+                std::system("cls");      // Limpiar la pantalla
                 std::cout << "Ingrese los datos del empleado:"<<std::endl;
                 std::cout << "Ingrese el nombre: "; std::cin >> nombre;
                 std::cout << "Ingrese el apellido: "; std::cin >> apellido;
@@ -424,6 +444,7 @@ void mostrarMenu() {
                 break;
 
             case 2:
+                std::system("cls");      // Limpiar la pantalla
                 std::cout << "Digite el nombre de quien desea modificar: " << std::endl;
                 std::cin >> nombre;
                 std::cout << "Digite el apellido de quien desea modificar: " << std::endl;
@@ -461,6 +482,7 @@ void mostrarMenu() {
                 }
 
             case 3:
+                std::system("cls");      // Limpiar la pantalla
                 std::cout << "ELIMINAR EMPLEADO" << std::endl;
                 std::cout << "Digite el nombre del empleado que desea eliminar: ";
                 std::cin >> nombre;
@@ -470,16 +492,19 @@ void mostrarMenu() {
                 break;
 
             case 4:
+                std::system("cls");      // Limpiar la pantalla
                 listaEmpleados.ordenarPorEdad();
                 std::cout << "Empleados ordenados por edad." << std::endl;
                 break;
 
             case 5:
+                std::system("cls");      // Limpiar la pantalla
                 listaEmpleados.ordenarPorApellidos();
                 std::cout << "Empleados ordenados por apellidos." << std::endl;
                 break;
 
             case 6:
+                std::system("cls");      // Limpiar la pantalla
                 std::cout << "CONSULTAR SALARIO" << std::endl;
                 std::cout << "Ingrese la categoria: "; std::cin >> categoria;
                 std::cout << "Ingrese el tipo de contrato: "; std::cin >> tipoContrato;
@@ -507,15 +532,18 @@ void mostrarMenu() {
                 break;
 
             case 7:
+                std::system("cls");      // Limpiar la pantalla
                 listaEmpleados.imprimirInformacion();
                 break;
 
             case 8:
+                std::system("cls");      // Limpiar la pantalla
                 salir = true;
                 std::cout << "Saliendo del programa." << std::endl;
                 break;
 
             default:
+                std::system("cls");      // Limpiar la pantalla
                 std::cout << "Opción no válida. Intente de nuevo." << std::endl;
                 break;
         }
