@@ -9,7 +9,7 @@
 int main() {
     // Cargar datos quemdos
     cargarInventario(); 
-    cargarProduccion();
+    //cargarProduccion();
 
     // Variables locales
     bool salir = false;
@@ -34,7 +34,7 @@ int main() {
         {
         case 1: 
             std::system("cls");      // Limpiar la pantalla
-            mainEmpleado();
+            mostrarMenu();
             break;
         case 2:
             std::system("cls");      // Limpiar la pantalla
