@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 // NOMBRE DE LA EMPRESA: LuxeHeJos SA
 
@@ -98,6 +99,10 @@ public:
         return sig;
     }
 
+    Empleado* getAnterior() const {
+        return ant;
+    }
+
     // METODOS SETTERS
     void setNombre(const std::string& _nombre) {
         nombre = _nombre;
@@ -143,6 +148,10 @@ public:
         sig = _sig;
     }
 
+    void setAnterior(Empleado* _ant) {
+        ant = _ant;
+    }
+
     // METODO IMPRIMIR INFORMACION DEL EMPLEADO
     void imprimirInformacion() {
         std::cout << "Nombre: " << nombre << std::endl;
@@ -176,14 +185,16 @@ public:
 
     // PUNTERO SIGUIENTE
     Empleado *sig = nullptr;
+    Empleado *ant = nullptr;
 };
 
 class ListEmpleados {
 private:
     Empleado* inicio;
+    Empleado* fin;
 
 public:
-    ListEmpleados() : inicio(nullptr) {}
+    ListEmpleados() : inicio(nullptr), fin(nullptr) {}
 
     // METODO PARA INSERTAR EMPLEADOS
     void agregarEmpleados(std::string nombre, std::string apellido, int _edad, std::string _tipoContrato, float _salarioBase,
@@ -224,20 +235,34 @@ public:
     }
 
     // METODO PARA MODIFICAR EMPLEADOS;
-    void modificarEmpleado(std::string nombre, std::string apellido, const Empleado& nuevoEmpleado) {
+    // METODO PARA MODIFICAR EMPLEADOS;
+
+    Empleado* buscarEmpleadoPorNombreApellido(std::string nombre, std::string apellido) {
         Empleado* aux = inicio;
         while (aux != nullptr) {
             if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
-                // Utilizar setters para actualizar la información del empleado
-                aux->setNombre(nuevoEmpleado.getNombre());
-                aux->setApellido(nuevoEmpleado.getApellido());
-                aux->setEdad(nuevoEmpleado.getEdad());
-                aux->setTipoContrato(nuevoEmpleado.getTipoContrato());
-                aux->setSalarioBase(nuevoEmpleado.getSalarioBase());
-                aux->setComplementosSalariales(nuevoEmpleado.getComplementosSalariales());
-                aux->setCategoria(nuevoEmpleado.getCategoria());
-                aux->setSector(nuevoEmpleado.getSector());
-                aux->setJefe(nuevoEmpleado.getJefe());
+                return aux; // Devuelve el puntero al empleado encontrado
+            }
+            aux = aux->getSig();
+        }
+        return nullptr; // No se encontró ningún empleado con el nombre y apellido proporcionados
+    }
+
+    void modificarEmpleado(std::string nombre, std::string apellido, int edad, std::string tipoContrato, float salarioBase,
+                      float complementosSalariales, std::string categoria, std::string sector, Empleado* jefe) {
+        Empleado* aux = inicio;
+        while (aux != nullptr) {
+            if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
+
+                aux->setNombre(nombre);
+                aux->setApellido(apellido);
+                aux->setEdad(edad);
+                aux->setTipoContrato(tipoContrato);
+                aux->setSalarioBase(salarioBase);
+                aux->setComplementosSalariales(complementosSalariales);
+                aux->setCategoria(categoria);
+                aux->setSector(sector);
+                aux->setJefe(jefe);
 
                 std::cout << "Empleado " << nombre << " " << apellido << " modificado exitosamente." << std::endl;
                 return;
@@ -250,25 +275,29 @@ public:
     // METODO PARA ELIMINAR EMPLEADOS;
     void eliminarEmpleado(std::string nombre, std::string apellido) {
         Empleado* aux = inicio;
-        Empleado* anterior = nullptr;
 
         while (aux != nullptr) {
             if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
-                if (anterior == nullptr) {
-                    inicio = aux->getSig();
+                Empleado* anterior = aux->getAnterior();
+                Empleado* siguiente = aux->getSig();
+
+                if (anterior != nullptr) {
+                    anterior->setSig(siguiente);
                 } else {
-                    anterior->setSig(aux->getSig());
+                    inicio = siguiente;
+                }
+
+                if (siguiente != nullptr) {
+                    siguiente->setAnterior(anterior);
                 }
 
                 std::cout << "Empleado " << nombre << " " << apellido << " eliminado exitosamente." << std::endl;
 
                 // Eliminar la instancia de empleado para liberar memoria
                 delete aux;
-
                 return;
             }
 
-            anterior = aux;
             aux = aux->getSig();
         }
 
@@ -360,56 +389,163 @@ public:
 
 };
 
-void mainEmpleado (){
-    // EMPLEADOS METIDOS POR MEDIO DE LA CLASE;
-    Empleado empleado1("Juan", "Perez", 30, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+void mostrarMenu() {
+    bool salir = false;
+    Empleado empleado1("", "", 0, "", 0.0, 0.0, "", "", nullptr);
+    ListEmpleados listaEmpleados;
+    listaEmpleados.agregarEmpleados("Juan", "Perez", 25, "Hora", 10.0, 0.0, "Supervisor", "Ventas", nullptr);
+    listaEmpleados.agregarEmpleados("Maria", "Lopez", 30, "Jornada Completa", 1500.0, 200.0, "Director", "Recursos Humanos", nullptr);
 
-    // FUNCION AGREGAR EMPLEADOS;
-    ListEmpleados empleados;
+    std::string nombre, apellido, tipoContrato, categoria, sector;
+    int edad, diasTrabajados, feriado, especial, regular, horas, contrato;
+    float salarioBase, complementosSalariales;
+    bool esFeriado, diaEspecial, diaRegular;
 
-    empleados.agregarEmpleados("Juan", "Perez", 30, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
-    empleados.agregarEmpleados("Ana", "Gomez", 47, "Hora", 15.0, 100.0, "Operario", "Produccion", &empleado1);
-    empleados.agregarEmpleados("Pedro", "Gonzalez", 35, "Hora", 15.0, 100.0, "Operario", "Produccion", nullptr);
-    empleados.agregarEmpleados("Maria", "Rodriguez", 12, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
+    Empleado* encontrado = nullptr;
 
-    // FUNCION IMPRIMIR INFORMACION DE LOS EMPLEADOS
-    std::cout << "LISTA NORMAL CON TODO INSERTADO: \n";
-    empleados.imprimirInformacion();
-    std::cout << "\n";
+    do
+    {
+        std::cout << "========================================" << std::endl;
+        std::cout << "|             MENU EMPLEADOS           |" << std::endl;
+        std::cout << "========================================" << std::endl;
+        std::cout << " " << std::endl;
+        std::cout << "1. Agregar Empleado" << std::endl;
+        std::cout << "2. Modificar Empleado" << std::endl;
+        std::cout << "3. Eliminar Empleado" << std::endl;
+        std::cout << "4. Ordenar por Edad" << std::endl;
+        std::cout << "5. Ordenar por Apellidos" << std::endl;
+        std::cout << "6. Consultar Salario" << std::endl;
+        std::cout << "7. Mostrar Informacion de Empleados" << std::endl;
+        std::cout << "8. Salir" << std::endl;
+        std::cout << " " << std::endl;
 
-    // BUSCANDO MODIFICAR UN EMPLEADO;
-    std::cout << "LISTA CON UN EMPLEADO MODIFICADO: \n";
-    Empleado nuevoEmpleado("Hector", "Caravaca", 70, "Jornada Completa", 3000.0, 500.0, "Supervisor", "Produccion", nullptr);
-    empleados.modificarEmpleado("Juan", "Perez", nuevoEmpleado);
+        int opcion;
+        std::cout << "Elija una opcion: ";
+        std::cin >> opcion;
 
-    // MOSTRAR LOS NUEVOS RESULTADOS
-    empleados.imprimirInformacion();
+        switch (opcion) {
+            case 1:
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "Ingrese los datos del empleado:"<<std::endl;
+                std::cout << "Ingrese el nombre: "; std::cin >> nombre;
+                std::cout << "Ingrese el apellido: "; std::cin >> apellido;
+                std::cout << "Ingrese la edad: "; std::cin >> edad;
+                std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: "; std::cin >> contrato;
+                if (contrato == 1){
+                    tipoContrato = "Horas";
+                } else {
+                    tipoContrato = "Jornada Completa";
+                }
+                std::cout << "Ingrese el salario base: "; std::cin >> salarioBase;
+                std::cout << "Ingrese los complementos salariales: "; std::cin >> complementosSalariales;
+                std::cout << "Ingrese la categoria: "; std::cin >> categoria;
+                std::cout << "Ingrese el sector: "; std::cin >> sector;
+                listaEmpleados.agregarEmpleados(nombre, apellido, edad, tipoContrato, salarioBase, complementosSalariales, categoria, sector, &empleado1);
+                break;
 
-    // ELIMINAR UN EMPLEADO
-    std::cout << "LISTA CON UN EMPLEADO ELIMINADO: \n";
-    empleados.eliminarEmpleado("Pedro", "Gonzalez");
+            case 2:
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "Digite el nombre de quien desea modificar: " << std::endl;
+                std::cin >> nombre;
+                std::cout << "Digite el apellido de quien desea modificar: " << std::endl;
+                std::cin >> apellido;
+                encontrado = listaEmpleados.buscarEmpleadoPorNombreApellido(nombre, apellido);
+                if (encontrado == nullptr) {
+                    std::cout << "Empleado con nombre " << nombre << " y apellido " << apellido << " no encontrado." << std::endl;
+                    break;
+                } else {
+                    std::cout << "Empleado con nombre " << nombre << " y apellido " << apellido << " encontrado." << std::endl;
 
-    // MOSTRAR LOS NUEVOS RESULTADOS
-    empleados.imprimirInformacion();
+                    std::string nuevoNombre, nuevoApellido, nuevoTipoContrato, nuevaCategoria, nuevoSector;
+                    int nuevaEdad, nuevoContrato;
+                    float nuevoSalarioBase, nuevoComplementosSalariales;
 
-    // ORDENAR POR EDAD
-    std::cout << "LISTA ORDENADA POR EDAD: \n";
-    empleados.ordenarPorEdad();
+                    // Ingresar los datos del nuevo empleado
+                    std::cout << "Ingrese los datos del nuevo empleado:" << std::endl;
+                    std::cout << "Ingrese el nombre: "; std::cin >> nuevoNombre;
+                    std::cout << "Ingrese el apellido: "; std::cin >> nuevoApellido;
+                    std::cout << "Ingrese la edad: "; std::cin >> nuevaEdad;
+                    std::cout << "Ingrese el tipo de contrato:\n1. Horas\n2. Jornada Completa\nOpcion: "; std::cin >> nuevoContrato;
+                    if (nuevoContrato == 1) {
+                        nuevoTipoContrato = "Horas";
+                    } else {
+                        nuevoTipoContrato = "Jornada Completa";
+                    }
+                    std::cout << "Ingrese el salario base: "; std::cin >> nuevoSalarioBase;
+                    std::cout << "Ingrese los complementos salariales: "; std::cin >> nuevoComplementosSalariales;
+                    std::cout << "Ingrese la categoria: "; std::cin >> nuevaCategoria;
+                    std::cout << "Ingrese el sector: "; std::cin >> nuevoSector;
 
-    // MOSTRAR LA LISTA ORDENADA
-    empleados.imprimirInformacion();
+                    // Llamar a la función modificarEmpleado con los datos del nuevo empleado
+                    listaEmpleados.modificarEmpleado(nuevoNombre, nuevoApellido, nuevaEdad, nuevoTipoContrato, nuevoSalarioBase, nuevoComplementosSalariales, nuevaCategoria, nuevoSector, &empleado1);
+                    break;
+                }
 
-    // ORDENAR POR APELLIDOS
-    std::cout << "LISTA ORDENADA POR APELLIDOS: \n";
-    empleados.ordenarPorApellidos();
+            case 3:
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "ELIMINAR EMPLEADO" << std::endl;
+                std::cout << "Digite el nombre del empleado que desea eliminar: ";
+                std::cin >> nombre;
+                std::cout << "Digite el apellido del empleado que desea eliminar: ";
+                std::cin >> apellido;
+                listaEmpleados.eliminarEmpleado(nombre, apellido);
+                break;
 
-    // MOSTRAR LA LISTA ORDENADA
-    empleados.imprimirInformacion();
+            case 4:
+                std::system("cls");      // Limpiar la pantalla
+                listaEmpleados.ordenarPorEdad();
+                std::cout << "Empleados ordenados por edad." << std::endl;
+                break;
 
-    // CONSULTAR SALARIO
-    std::cout << "CONSULTAR SALARIO: \n";
-    ConsultarSalario consulta(50, 0, false, false, true, "Supervisor", "Jornada Completa");
+            case 5:
+                std::system("cls");      // Limpiar la pantalla
+                listaEmpleados.ordenarPorApellidos();
+                std::cout << "Empleados ordenados por apellidos." << std::endl;
+                break;
 
-    // MOSTRAR EL SALARIO
-    empleados.consultarSalario(consulta);
+            case 6:
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "CONSULTAR SALARIO" << std::endl;
+                std::cout << "Ingrese la categoria: "; std::cin >> categoria;
+                std::cout << "Ingrese el tipo de contrato: "; std::cin >> tipoContrato;
+                std::cout << "Ingrese las horas laboradas: "; std::cin >> horas;
+                std::cout << "Ingrese los dias trabajados: "; std::cin >> diasTrabajados;
+                std::cout << "Ingrese si es feriado (1 = si, 0 = no): "; std::cin >> feriado;
+                if (feriado == 1){
+                    esFeriado = true;
+                } else {
+                    esFeriado = false;
+                }
+                std::cout << "Ingrese si es turno especial (1 = si, 0 = no): "; std::cin >> especial;
+                if (especial == 1){
+                    diaEspecial = true;
+                } else {
+                    diaEspecial = false;
+                }
+                std::cout << "Ingrese si es horario regular (1 = si, 0 = no): "; std::cin >> regular;
+                if (regular == 1){
+                    diaRegular = true;
+                } else {
+                    diaRegular = false;
+                }
+                listaEmpleados.consultarSalario(ConsultarSalario(horas, diasTrabajados, esFeriado, diaEspecial, diaRegular, categoria, tipoContrato));
+                break;
+
+            case 7:
+                std::system("cls");      // Limpiar la pantalla
+                listaEmpleados.imprimirInformacion();
+                break;
+
+            case 8:
+                std::system("cls");      // Limpiar la pantalla
+                salir = true;
+                std::cout << "Saliendo del programa." << std::endl;
+                break;
+
+            default:
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "Opción no válida. Intente de nuevo." << std::endl;
+                break;
+        }
+    } while (!salir);
 }
