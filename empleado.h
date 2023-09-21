@@ -591,9 +591,21 @@ void mostrarMenu() {
                     std::cout << "Ingrese los complementos salariales: "; std::cin >> nuevoComplementosSalariales;
                     std::cout << "Ingrese la categoria: "; std::cin >> nuevaCategoria;
                     std::cout << "Ingrese el sector: "; std::cin >> nuevoSector;
-
-                    // Llamar a la función modificarEmpleado con los datos del nuevo empleado
                     listaEmpleados.modificarEmpleado(nuevoNombre, nuevoApellido, nuevaEdad, nuevoTipoContrato, nuevoSalarioBase, nuevoComplementosSalariales, nuevaCategoria, nuevoSector, nullptr);
+                    std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> jefe;
+                    if (jefe == 1){
+                        tieneJefe = true;
+                    } else {
+                        tieneJefe = false;
+                    }
+                    if (tieneJefe){
+                        std::cout << "ASIGNAR JEFE" << std::endl;
+                        std::cout << "Ingrese el nombre del empleado: "; std::cin >> nombre;
+                        std::cout << "Ingrese el apellido del empleado: "; std::cin >> apellido;
+                        std::cout << "Ingrese el nombre del jefe: "; std::cin >> nombreJefe;
+                        std::cout << "Ingrese el apellido del jefe: "; std::cin >> apellidoJefe;
+                        listaEmpleados.asignarJefe(nombre, apellido, nombreJefe, apellidoJefe);
+                    }
                     break;
                 }
 
@@ -622,7 +634,26 @@ void mostrarMenu() {
                 std::system("cls");      // Limpiar la pantalla
                 std::cout << "CONSULTAR SALARIO" << std::endl;
                 std::cout << "Ingrese la categoria: "; std::cin >> categoria;
-                std::cout << "Ingrese el tipo de contrato: "; std::cin >> tipoContrato;
+                entradaValida = false;
+                do {
+                        std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: ";
+
+                        if (std::cin >> contrato) {
+                            if (contrato == 1) {
+                                tipoContrato = "Horas";
+                                entradaValida = true;
+                            } else if (contrato == 2) {
+                                tipoContrato = "Jornada Completa";
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Opcion invalida." << '\n';
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                            std::cin.clear();
+                            std::cin.ignore();
+                        }
+                    } while (!entradaValida);
                 std::cout << "Ingrese las horas laboradas: "; std::cin >> horas;
                 std::cout << "Ingrese los dias trabajados: "; std::cin >> diasTrabajados;
                 std::cout << "Ingrese si es feriado (1 = si, 0 = no): "; std::cin >> feriado;
