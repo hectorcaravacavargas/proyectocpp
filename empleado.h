@@ -234,13 +234,12 @@ public:
         }
     }
 
-    // METODO PARA MODIFICAR EMPLEADOS;
-    // METODO PARA MODIFICAR EMPLEADOS;
+    // METODOS PARA MODIFICAR EMPLEADOS;
 
     Empleado* buscarEmpleadoPorNombreApellido(std::string nombre, std::string apellido) {
         Empleado* aux = inicio;
         while (aux != nullptr) {
-            if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
+            if (aux->getNombre() == nombre.c_str() && aux->getApellido() == apellido) {
                 return aux; // Devuelve el puntero al empleado encontrado
             }
             aux = aux->getSig();
@@ -270,6 +269,30 @@ public:
             aux = aux->getSig();
         }
         std::cout << "Empleado con nombre " << nombre << " y apellido: " << apellido << " no encontrado." << std::endl;
+    }
+
+    // METODO PARA ASIGNAR EL JEFE A UNA PERSONA;
+    void asignarJefe(std::string nombreEmpleado, std::string apellidoEmpleado, std::string nombreJefe, std::string apellidoJefe) {
+        // BUSCAR EL EMPLEADO POR NOMBRE Y APELLIDO PARA VERIFICAR CON MAYOR SEGURIDAD SI ESTA ESTA PERSONA;
+        Empleado* empleado = buscarEmpleadoPorNombreApellido(nombreEmpleado, apellidoEmpleado);
+
+        if (empleado == nullptr) {
+            std::cout << "El empleado " << nombreEmpleado << " " << apellidoEmpleado << " no se encuentra en la lista." << std::endl;
+            return;
+        }
+
+        // AL IGUAL, SE BUSCA EL JEFE POR EL NOMBRE Y EL APELLIDO PARA TENER MAYOR CERTEZA;
+        Empleado* jefe = buscarEmpleadoPorNombreApellido(nombreJefe, apellidoJefe);
+
+        // SI EL JEFE NO EXISTE, ENTONCES SE INDICA A CONTINUACION;
+        if (jefe == nullptr) {
+            std::cout << "El jefe " << nombreJefe << " " << apellidoJefe << " no se encuentra en la lista." << std::endl;
+            return;
+        }
+
+        // EN CASO DE QUE SI EXISTA, SE ASIGNA EL JEFE A LA PERSONA;
+        empleado->setJefe(jefe);
+        std::cout << "Se ha asignado a " << nombreEmpleado << " " << apellidoEmpleado << " el jefe " << nombreJefe << " " << apellidoJefe << "." << std::endl;
     }
 
     // METODO PARA ELIMINAR EMPLEADOS;
@@ -391,15 +414,17 @@ public:
 
 void mostrarMenu() {
     bool salir = false;
-    Empleado empleado1("", "", 0, "", 0.0, 0.0, "", "", nullptr);
     ListEmpleados listaEmpleados;
     listaEmpleados.agregarEmpleados("Juan", "Perez", 25, "Hora", 10.0, 0.0, "Supervisor", "Ventas", nullptr);
     listaEmpleados.agregarEmpleados("Maria", "Lopez", 30, "Jornada Completa", 1500.0, 200.0, "Director", "Recursos Humanos", nullptr);
 
-    std::string nombre, apellido, tipoContrato, categoria, sector;
-    int edad, diasTrabajados, feriado, especial, regular, horas, contrato;
+    std::string nombre, apellido, tipoContrato, categoria, sector, nombreJefe, apellidoJefe;
+    int edad, diasTrabajados, feriado, especial, regular, horas, contrato, jefe;
     float salarioBase, complementosSalariales;
-    bool esFeriado, diaEspecial, diaRegular;
+    bool esFeriado, diaEspecial, diaRegular, tieneJefe;
+
+    // MANEJO EXCEPCIONES;
+    bool entradaValida = false;
 
     Empleado* encontrado = nullptr;
 
@@ -423,24 +448,115 @@ void mostrarMenu() {
         std::cout << "Elija una opcion: ";
         std::cin >> opcion;
 
+        try
+        {
+            if (opcion < 1 || opcion > 8)
+            {
+                throw std::invalid_argument("Opcion invalida.\n");
+            }
+        }
+        catch(std::invalid_argument& e)
+        {
+            std::cerr << "Error: " << e.what() << std::endl;
+            std::cin.clear();
+            std::cin.ignore();
+        }
+
         switch (opcion) {
             case 1:
-                std::system("cls");      // Limpiar la pantalla
-                std::cout << "Ingrese los datos del empleado:"<<std::endl;
-                std::cout << "Ingrese el nombre: "; std::cin >> nombre;
-                std::cout << "Ingrese el apellido: "; std::cin >> apellido;
-                std::cout << "Ingrese la edad: "; std::cin >> edad;
-                std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: "; std::cin >> contrato;
-                if (contrato == 1){
-                    tipoContrato = "Horas";
-                } else {
-                    tipoContrato = "Jornada Completa";
-                }
-                std::cout << "Ingrese el salario base: "; std::cin >> salarioBase;
-                std::cout << "Ingrese los complementos salariales: "; std::cin >> complementosSalariales;
-                std::cout << "Ingrese la categoria: "; std::cin >> categoria;
-                std::cout << "Ingrese el sector: "; std::cin >> sector;
-                listaEmpleados.agregarEmpleados(nombre, apellido, edad, tipoContrato, salarioBase, complementosSalariales, categoria, sector, &empleado1);
+                    std::system("cls");      // Limpiar la pantalla
+                    std::cout << "Ingrese los datos del empleado:"<<std::endl;
+                    std::cout << "Ingrese el nombre: "; std::cin >> nombre;
+                    std::cout << "Ingrese el apellido: "; std::cin >> apellido;
+                    do {
+                        std::cout << "Ingrese la edad: ";
+                        if (std::cin >> edad) {
+                            if (edad <= 0) {
+                                std::cerr << "Error: La edad no puede ser negativa." << '\n';
+                            } else if(edad > 0 && edad < 18) {
+                                std::cerr << "Error: La edad debe ser mayor o igual a 18." << '\n';
+                            } else {
+                                entradaValida = true;
+                            }
+                        } else {
+                            std::cerr << "Error: La edad debe ser un número." << '\n';
+                            std::cin.clear();
+                            std::cin.ignore();
+                        }
+                    } while (!entradaValida);
+
+                    entradaValida = false;
+                    do {
+                        std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: ";
+
+                        if (std::cin >> contrato) {
+                            if (contrato == 1) {
+                                tipoContrato = "Horas";
+                                entradaValida = true;
+                            } else if (contrato == 2) {
+                                tipoContrato = "Jornada Completa";
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Opcion invalida." << '\n';
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                            std::cin.clear();
+                            std::cin.ignore();
+                        }
+                    } while (!entradaValida);
+
+                    entradaValida = false;
+                    do {
+                        std::cout << "Ingrese el salario base: ";
+
+                        if (std::cin >> salarioBase) {
+                            if (salarioBase >= 0.0) {
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: El salario base no puede ser negativo." << '\n';
+                            }
+                        } else {
+                            std::cerr << "Error: Ingrese un valor numerico para el salario base." << '\n';
+                            std::cin.clear();
+                            std::cin.ignore(); // Limpiar el búfer de entrada
+                        }
+                    } while (!entradaValida);
+
+                    entradaValida = false;
+
+                    do {
+                        std::cout << "Ingrese los complementos salariales: ";
+
+                        if (std::cin >> complementosSalariales) {
+                            if (complementosSalariales >= 0.0) {
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Los complementos salariales no pueden ser negativos." << '\n';
+                            }
+                        } else {
+                            std::cerr << "Error: Ingrese un valor numerico para los complementos salariales." << '\n';
+                            std::cin.clear();
+                            std::cin.ignore(); // Limpiar el búfer de entrada
+                        }
+                    } while (!entradaValida);
+                    std::cout << "Ingrese la categoria: "; std::cin >> categoria;
+                    std::cout << "Ingrese el sector: "; std::cin >> sector;
+                    listaEmpleados.agregarEmpleados(nombre, apellido, edad, tipoContrato, salarioBase, complementosSalariales, categoria, sector, nullptr);
+                    std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> jefe;
+                    if (jefe == 1){
+                        tieneJefe = true;
+                    } else {
+                        tieneJefe = false;
+                    }
+                    if (tieneJefe){
+                        std::cout << "ASIGNAR JEFE" << std::endl;
+                        std::cout << "Ingrese el nombre del empleado: "; std::cin >> nombre;
+                        std::cout << "Ingrese el apellido del empleado: "; std::cin >> apellido;
+                        std::cout << "Ingrese el nombre del jefe: "; std::cin >> nombreJefe;
+                        std::cout << "Ingrese el apellido del jefe: "; std::cin >> apellidoJefe;
+                        listaEmpleados.asignarJefe(nombre, apellido, nombreJefe, apellidoJefe);
+                    }
                 break;
 
             case 2:
@@ -477,13 +593,12 @@ void mostrarMenu() {
                     std::cout << "Ingrese el sector: "; std::cin >> nuevoSector;
 
                     // Llamar a la función modificarEmpleado con los datos del nuevo empleado
-                    listaEmpleados.modificarEmpleado(nuevoNombre, nuevoApellido, nuevaEdad, nuevoTipoContrato, nuevoSalarioBase, nuevoComplementosSalariales, nuevaCategoria, nuevoSector, &empleado1);
+                    listaEmpleados.modificarEmpleado(nuevoNombre, nuevoApellido, nuevaEdad, nuevoTipoContrato, nuevoSalarioBase, nuevoComplementosSalariales, nuevaCategoria, nuevoSector, nullptr);
                     break;
                 }
 
             case 3:
                 std::system("cls");      // Limpiar la pantalla
-                std::cout << "ELIMINAR EMPLEADO" << std::endl;
                 std::cout << "Digite el nombre del empleado que desea eliminar: ";
                 std::cin >> nombre;
                 std::cout << "Digite el apellido del empleado que desea eliminar: ";
