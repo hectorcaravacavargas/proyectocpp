@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <sstream>
 
 // NOMBRE DE LA EMPRESA: LuxeHeJos SA
 
@@ -300,7 +301,10 @@ public:
         Empleado* aux = inicio;
 
         while (aux != nullptr) {
-            if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
+            int val = aux->getNombre().compare(nombre);
+            int val2 = aux->getApellido().compare(apellido);
+
+            if (val == 0 && val2 == 0) {
                 Empleado* anterior = aux->getAnterior();
                 Empleado* siguiente = aux->getSig();
 
@@ -418,7 +422,7 @@ void mostrarMenu() {
     listaEmpleados.agregarEmpleados("Juan", "Perez", 25, "Hora", 10.0, 0.0, "Supervisor", "Ventas", nullptr);
     listaEmpleados.agregarEmpleados("Maria", "Lopez", 30, "Jornada Completa", 1500.0, 200.0, "Director", "Recursos Humanos", nullptr);
 
-    std::string nombre, apellido, tipoContrato, categoria, sector, nombreJefe, apellidoJefe;
+    std::string nombre, apellido, tipoContrato, categoria, sector, nombreJefe, apellidoJefe, input;
     int edad, diasTrabajados, feriado, especial, regular, horas, contrato, jefe;
     float salarioBase, complementosSalariales;
     bool esFeriado, diaEspecial, diaRegular, tieneJefe;
@@ -457,7 +461,7 @@ void mostrarMenu() {
         }
         catch(std::invalid_argument& e)
         {
-            std::cerr << "Error: " << e.what() << std::endl;
+            std::cerr << "Error: debe ingresar un numero !" << std::endl;
             std::cin.clear();
             std::cin.ignore();
         }
@@ -468,28 +472,30 @@ void mostrarMenu() {
                     std::cout << "Ingrese los datos del empleado:"<<std::endl;
                     std::cout << "Ingrese el nombre: "; std::cin >> nombre;
                     std::cout << "Ingrese el apellido: "; std::cin >> apellido;
+
                     do {
-                        std::cout << "Ingrese la edad: ";
-                        if (std::cin >> edad) {
+                        std::cout << "Ingrese la edad: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> edad) {
                             if (edad <= 0) {
                                 std::cerr << "Error: La edad no puede ser negativa." << '\n';
-                            } else if(edad > 0 && edad < 18) {
+                            } else if (edad < 18) {
                                 std::cerr << "Error: La edad debe ser mayor o igual a 18." << '\n';
                             } else {
                                 entradaValida = true;
                             }
                         } else {
-                            std::cerr << "Error: La edad debe ser un número." << '\n';
-                            std::cin.clear();
-                            std::cin.ignore();
+                            std::cerr << "Error: La entrada no es un numero valido." << '\n';
                         }
+
                     } while (!entradaValida);
 
-                    entradaValida = false;
-                    do {
-                        std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: ";
+                    entradaValida = false; input = "";
 
-                        if (std::cin >> contrato) {
+                    do {
+                        std::cout << "\nIngrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> contrato) {
                             if (contrato == 1) {
                                 tipoContrato = "Horas";
                                 entradaValida = true;
@@ -497,58 +503,66 @@ void mostrarMenu() {
                                 tipoContrato = "Jornada Completa";
                                 entradaValida = true;
                             } else {
-                                std::cerr << "Error: Opcion invalida." << '\n';
+                                std::cerr << "Error: Opcion invalida.\n";
                             }
                         } else {
-                            std::cerr << "Error: La opcion debe ser un numero." << '\n';
-                            std::cin.clear();
-                            std::cin.ignore();
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
                         }
                     } while (!entradaValida);
 
-                    entradaValida = false;
+                    entradaValida = false; input = "";
                     do {
-                        std::cout << "Ingrese el salario base: ";
-
-                        if (std::cin >> salarioBase) {
-                            if (salarioBase >= 0.0) {
-                                entradaValida = true;
+                        std::cout << "Ingrese el salario base: "; std::cin >> input;
+                        std::istringstream stream(input);
+                            if (stream >> salarioBase) {
+                                if (salarioBase >= 0.0) {
+                                    entradaValida = true;
+                                } else {
+                                    std::cerr << "Error: El salario base no puede ser negativo." << '\n';
+                                }
                             } else {
-                                std::cerr << "Error: El salario base no puede ser negativo." << '\n';
+                                std::cerr << "Error: Ingrese un valor numerico para el salario base." << '\n';
                             }
-                        } else {
-                            std::cerr << "Error: Ingrese un valor numerico para el salario base." << '\n';
-                            std::cin.clear();
-                            std::cin.ignore(); // Limpiar el búfer de entrada
-                        }
                     } while (!entradaValida);
 
-                    entradaValida = false;
+                    entradaValida = false; input = "";
 
                     do {
-                        std::cout << "Ingrese los complementos salariales: ";
-
-                        if (std::cin >> complementosSalariales) {
-                            if (complementosSalariales >= 0.0) {
-                                entradaValida = true;
+                        std::cout << "Ingrese los complementos salariales: "; std::cin >> input;
+                        std::istringstream stream(input);
+                            if (stream >> complementosSalariales) {
+                                if (complementosSalariales >= 0.0) {
+                                    entradaValida = true;
+                                } else {
+                                    std::cerr << "Error: Los complementos salariales no pueden ser negativos." << '\n';
+                                }
                             } else {
-                                std::cerr << "Error: Los complementos salariales no pueden ser negativos." << '\n';
+                                std::cerr << "Error: Ingrese un valor numerico para los complementos salariales." << '\n';
                             }
-                        } else {
-                            std::cerr << "Error: Ingrese un valor numerico para los complementos salariales." << '\n';
-                            std::cin.clear();
-                            std::cin.ignore(); // Limpiar el búfer de entrada
-                        }
                     } while (!entradaValida);
                     std::cout << "Ingrese la categoria: "; std::cin >> categoria;
                     std::cout << "Ingrese el sector: "; std::cin >> sector;
                     listaEmpleados.agregarEmpleados(nombre, apellido, edad, tipoContrato, salarioBase, complementosSalariales, categoria, sector, nullptr);
-                    std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> jefe;
-                    if (jefe == 1){
-                        tieneJefe = true;
-                    } else {
-                        tieneJefe = false;
-                    }
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> jefe) {
+                            if (jefe == 1) {
+                                tieneJefe = true;
+                                entradaValida = true;
+                            } else if (jefe == 2) {
+                                tieneJefe = false;
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Opcion invalida.\n";
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+                    } while (!entradaValida);
+
                     if (tieneJefe){
                         std::cout << "ASIGNAR JEFE" << std::endl;
                         std::cout << "Ingrese el nombre del empleado: "; std::cin >> nombre;
@@ -556,6 +570,8 @@ void mostrarMenu() {
                         std::cout << "Ingrese el nombre del jefe: "; std::cin >> nombreJefe;
                         std::cout << "Ingrese el apellido del jefe: "; std::cin >> apellidoJefe;
                         listaEmpleados.asignarJefe(nombre, apellido, nombreJefe, apellidoJefe);
+                    } else {
+                        std::cout << "El empleado no tiene jefe." << std::endl;
                     }
                 break;
 
@@ -580,24 +596,97 @@ void mostrarMenu() {
                     std::cout << "Ingrese los datos del nuevo empleado:" << std::endl;
                     std::cout << "Ingrese el nombre: "; std::cin >> nuevoNombre;
                     std::cout << "Ingrese el apellido: "; std::cin >> nuevoApellido;
-                    std::cout << "Ingrese la edad: "; std::cin >> nuevaEdad;
-                    std::cout << "Ingrese el tipo de contrato:\n1. Horas\n2. Jornada Completa\nOpcion: "; std::cin >> nuevoContrato;
-                    if (nuevoContrato == 1) {
-                        nuevoTipoContrato = "Horas";
-                    } else {
-                        nuevoTipoContrato = "Jornada Completa";
-                    }
-                    std::cout << "Ingrese el salario base: "; std::cin >> nuevoSalarioBase;
-                    std::cout << "Ingrese los complementos salariales: "; std::cin >> nuevoComplementosSalariales;
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Ingrese la edad: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> nuevaEdad) {
+                            if (nuevaEdad <= 0) {
+                                std::cerr << "Error: La edad no puede ser negativa." << '\n';
+                            } else if (nuevaEdad < 18) {
+                                std::cerr << "Error: La edad debe ser mayor o igual a 18." << '\n';
+                            } else {
+                                entradaValida = true;
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+
+                    } while (!entradaValida);
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Ingrese el tipo de contrato:\n1. Horas\n2. Jornada Completa\nOpcion: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> nuevoContrato) {
+                            if (nuevoContrato == 1) {
+                                nuevoTipoContrato = "Horas";
+                                entradaValida = true;
+                            } else if (nuevoContrato == 2) {
+                                nuevoTipoContrato = "Jornada Completa";
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Opcion invalida.\n";
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+                    } while (!entradaValida);
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Ingrese el salario base: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> nuevoSalarioBase) {
+                            if (nuevoContrato < 0.0) {
+                                std::cerr << "Error: El salario base no puede ser negativo." << '\n';
+                            } else {
+                                entradaValida = true;
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+                    } while (!entradaValida);
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Ingrese los complementos salariales: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> nuevoComplementosSalariales) {
+                            if (nuevoComplementosSalariales < 0.0) {
+                                std::cerr << "Error: Los complementos salariales no pueden ser negativos." << '\n';
+                            } else {
+                                entradaValida = true;
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+                    } while (!entradaValida);
+
                     std::cout << "Ingrese la categoria: "; std::cin >> nuevaCategoria;
                     std::cout << "Ingrese el sector: "; std::cin >> nuevoSector;
                     listaEmpleados.modificarEmpleado(nuevoNombre, nuevoApellido, nuevaEdad, nuevoTipoContrato, nuevoSalarioBase, nuevoComplementosSalariales, nuevaCategoria, nuevoSector, nullptr);
-                    std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> jefe;
-                    if (jefe == 1){
-                        tieneJefe = true;
-                    } else {
-                        tieneJefe = false;
-                    }
+
+                    entradaValida = false; input = "";
+                    do {
+                        std::cout << "Tiene jefe? \n1. Si\n2. No\nOpcion: "; std::cin >> input;
+                        std::istringstream stream(input);
+                        if (stream >> jefe) {
+                            if (jefe == 1) {
+                                tieneJefe = true;
+                                entradaValida = true;
+                            } else if (jefe == 2) {
+                                tieneJefe = false;
+                                entradaValida = true;
+                            } else {
+                                std::cerr << "Error: Opcion invalida.\n";
+                            }
+                        } else {
+                            std::cerr << "Error: La opcion debe ser un numero.\n";
+                        }
+                    } while (!entradaValida);
+
                     if (tieneJefe){
                         std::cout << "ASIGNAR JEFE" << std::endl;
                         std::cout << "Ingrese el nombre del empleado: "; std::cin >> nombre;
@@ -605,6 +694,8 @@ void mostrarMenu() {
                         std::cout << "Ingrese el nombre del jefe: "; std::cin >> nombreJefe;
                         std::cout << "Ingrese el apellido del jefe: "; std::cin >> apellidoJefe;
                         listaEmpleados.asignarJefe(nombre, apellido, nombreJefe, apellidoJefe);
+                    } else {
+                        std::cout << "El empleado no tiene jefe." << std::endl;
                     }
                     break;
                 }
@@ -634,46 +725,129 @@ void mostrarMenu() {
                 std::system("cls");      // Limpiar la pantalla
                 std::cout << "CONSULTAR SALARIO" << std::endl;
                 std::cout << "Ingrese la categoria: "; std::cin >> categoria;
-                entradaValida = false;
-                do {
-                        std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: ";
 
-                        if (std::cin >> contrato) {
-                            if (contrato == 1) {
-                                tipoContrato = "Horas";
-                                entradaValida = true;
-                            } else if (contrato == 2) {
-                                tipoContrato = "Jornada Completa";
-                                entradaValida = true;
-                            } else {
-                                std::cerr << "Error: Opcion invalida." << '\n';
-                            }
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese el tipo de contrato: \n1. Horas \n2. Jornada completa\nOpcion: "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> tipoContrato) {
+                        if (contrato == 1) {
+                            tipoContrato = "Horas";
+                            entradaValida = true;
+                        } else if (contrato == 2) {
+                            tipoContrato = "Jornada Completa";
+                            entradaValida = true;
                         } else {
-                            std::cerr << "Error: La opcion debe ser un numero." << '\n';
-                            std::cin.clear();
-                            std::cin.ignore();
+                            std::cerr << "Error: Opcion invalida." << '\n';
                         }
-                    } while (!entradaValida);
-                std::cout << "Ingrese las horas laboradas: "; std::cin >> horas;
-                std::cout << "Ingrese los dias trabajados: "; std::cin >> diasTrabajados;
-                std::cout << "Ingrese si es feriado (1 = si, 0 = no): "; std::cin >> feriado;
-                if (feriado == 1){
-                    esFeriado = true;
-                } else {
-                    esFeriado = false;
-                }
-                std::cout << "Ingrese si es turno especial (1 = si, 0 = no): "; std::cin >> especial;
-                if (especial == 1){
-                    diaEspecial = true;
-                } else {
-                    diaEspecial = false;
-                }
-                std::cout << "Ingrese si es horario regular (1 = si, 0 = no): "; std::cin >> regular;
-                if (regular == 1){
-                    diaRegular = true;
-                } else {
-                    diaRegular = false;
-                }
+                    } else {
+                        std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+                } while (!entradaValida);
+
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese las horas laboradas: "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> horas) {
+                        if (horas < 0) {
+                            std::cerr << "Error: Las horas laboradas no pueden ser negativas." << '\n';
+                        } else {
+                            entradaValida = true;
+                        }
+                    } else {
+                        std::cerr << "Error: Ingrese un valor numerico para las horas laboradas." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+
+                } while (!entradaValida);
+
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese los dias trabajados: "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> diasTrabajados) {
+                        if (diasTrabajados < 0) {
+                            std::cerr << "Error: Los dias trabajados no pueden ser negativos." << '\n';
+                        } else {
+                            entradaValida = true;
+                        }
+                    } else {
+                        std::cerr << "Error: Ingrese un valor numerico para las horas laboradas." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+
+                } while (!entradaValida);
+
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese si es feriado (1 = si, 0 = no): "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> feriado) {
+                        if (feriado == 1) {
+                            esFeriado = true;
+                            entradaValida = true;
+                        } else if (feriado == 2) {
+                            esFeriado = false;
+                            entradaValida = true;
+                        } else {
+                            std::cerr << "Error: Opcion invalida." << '\n';
+                        }
+                    } else {
+                        std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+
+                } while (!entradaValida);
+
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese si es turno especial (1 = si, 0 = no): "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> especial) {
+                        if (especial == 1) {
+                            diaEspecial = true;
+                            entradaValida = true;
+                        } else if (especial == 2) {
+                            diaEspecial = false;
+                            entradaValida = true;
+                        } else {
+                            std::cerr << "Error: Opcion invalida." << '\n';
+                        }
+                    } else {
+                        std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+
+                } while (!entradaValida);
+
+                entradaValida = false; input = "";
+                do {
+                    std::cout << "Ingrese si es horario regular (1 = si, 0 = no): "; std::cin >> input;
+                    std::istringstream stream(input);
+                    if (stream >> regular) {
+                        if (regular == 1) {
+                            diaRegular = true;
+                            entradaValida = true;
+                        } else if (regular == 2) {
+                            diaRegular = false;
+                            entradaValida = true;
+                        } else {
+                            std::cerr << "Error: Opcion invalida." << '\n';
+                        }
+                    } else {
+                        std::cerr << "Error: La opcion debe ser un numero." << '\n';
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
+                } while (!entradaValida);
+
                 listaEmpleados.consultarSalario(ConsultarSalario(horas, diasTrabajados, esFeriado, diaEspecial, diaRegular, categoria, tipoContrato));
                 break;
 
