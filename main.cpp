@@ -10,7 +10,8 @@
 int main() {
     // Cargar datos quemdos
     cargarInventario();
-    //cargarProduccion();
+    cargarProduccion();
+    cargarEmpleados();
 
     // Variables locales
     std::string entrada;
