@@ -10,7 +10,7 @@
 int main() {
     // Cargar datos quemdos
     cargarInventario();
-    cargarProduccion();
+    //cargarProduccion();
 
     // Variables locales
     std::string entrada;
@@ -28,26 +28,12 @@ int main() {
         std::cout << "3. Fases de proyecto" << std::endl;
         std::cout << "4. Salir" << std::endl;
 
-        std::cout << " " << std::endl;
         do
         {
-            std::cout << "Ingrese una opcion: "; std::cin >> entrada;
+            std::cout << "\nIngrese una opcion: "; std::cin >> entrada;
             std::istringstream stream(entrada);
             if (stream >> opcion) {
-                if (opcion == 1) {
-                    esValido = true;
-                }
-                else if (opcion == 2) {
-                    esValido = true;
-                }
-                else if (opcion == 3) {
-                    esValido = true;
-                }
-                else if (opcion == 4) {
-                    esValido = true;
-                } else {
-                    std::cout << "Opcion invalida" << std::endl;
-                }
+                esValido = true;
             } else {
                 std::cerr << "Error: debe ingresar un numero";
             }
@@ -72,6 +58,7 @@ int main() {
             break;
 
         default:
+            std::system("cls");
             std::cout << "Opcion invalida" << std::endl;
             break;
         }

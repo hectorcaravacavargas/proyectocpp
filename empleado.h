@@ -416,11 +416,19 @@ public:
 
 };
 
+ListEmpleados listaEmpleados;
+
+void cargarEmpleados () {
+    listaEmpleados.agregarEmpleados("Juan", "Perez", 20, "Horas", 5500.0, 100.0, "Supervisor", "Ventas", nullptr);
+    listaEmpleados.agregarEmpleados("Maria", "Gonzalez", 25, "Jornada Completa", 1000.0, 12.0, "Administradora", "Ventas", nullptr);
+    listaEmpleados.agregarEmpleados("Pedro", "Gomez", 30, "Horas", 10000.0, 90.0, "Contador", "Ventas", nullptr);
+    listaEmpleados.agregarEmpleados("Jose", "Rodriguez", 35, "Jornada Completa", 15000.0, 35.0, "Supervisor", "Marketing", nullptr);
+    listaEmpleados.agregarEmpleados("Ana", "Hernandez", 40, "Horas", 21000.0, 70.0, "Administradora", "Marketing", nullptr);
+    listaEmpleados.agregarEmpleados("Luis", "Diaz", 45, "Jornada Completa", 11000.0, 47.0, "Contador", "Marketing", nullptr);
+}
+
 void mostrarMenu() {
     bool salir = false;
-    ListEmpleados listaEmpleados;
-    listaEmpleados.agregarEmpleados("Juan", "Perez", 25, "Hora", 10.0, 0.0, "Supervisor", "Ventas", nullptr);
-    listaEmpleados.agregarEmpleados("Maria", "Lopez", 30, "Jornada Completa", 1500.0, 200.0, "Director", "Recursos Humanos", nullptr);
 
     std::string nombre, apellido, tipoContrato, categoria, sector, nombreJefe, apellidoJefe, input;
     int edad, diasTrabajados, feriado, especial, regular, horas, contrato, jefe;
