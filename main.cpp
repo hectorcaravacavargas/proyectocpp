@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "empleado.h"
 #include "inventario.h"
 #include "produccion.h"
@@ -8,15 +9,16 @@
 // AQUI IRAN LOS USOS DE TODAS LAS CLASES;
 int main() {
     // Cargar datos quemdos
-    cargarInventario(); 
+    cargarInventario();
     //cargarProduccion();
 
     // Variables locales
-    bool salir = false;
+    std::string entrada;
+    bool salir = false, esValido = false;
     int opcion = 0;
     do
-    {   
-        
+    {
+
         std::cout << "========================================" << std::endl;
         std::cout << "|             MENU PRINCIPAL           |" << std::endl;
         std::cout << "========================================" << std::endl;
@@ -27,12 +29,33 @@ int main() {
         std::cout << "4. Salir" << std::endl;
 
         std::cout << " " << std::endl;
-        std::cout << "Ingrese una opcion: ";
-        std::cin >> opcion;
+        do
+        {
+            std::cout << "Ingrese una opcion: "; std::cin >> entrada;
+            std::istringstream stream(entrada);
+            if (stream >> opcion) {
+                if (opcion == 1) {
+                    esValido = true;
+                }
+                else if (opcion == 2) {
+                    esValido = true;
+                }
+                else if (opcion == 3) {
+                    esValido = true;
+                }
+                else if (opcion == 4) {
+                    esValido = true;
+                } else {
+                    std::cout << "Opcion invalida" << std::endl;
+                }
+            } else {
+                std::cerr << "Error: debe ingresar un numero";
+            }
+        } while (!esValido);
 
         switch (opcion)
         {
-        case 1: 
+        case 1:
             std::system("cls");      // Limpiar la pantalla
             mostrarMenu();
             break;
