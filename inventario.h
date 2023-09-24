@@ -49,8 +49,11 @@ public:
     }
 
     friend bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada);
+    friend bool estadoInventario(Inventario& inventario, const std::string& nombre, int cantidad);
 
     void aumentarInventario() { // Funcion publica para aumentar el inventario ya existente
+        bool salir = false;
+
         // Variables locales
         std::string nombre;
         int cantidad;
@@ -58,9 +61,36 @@ public:
 
         std::cin.ignore();                              // Ignora el carácter de nueva línea anterior
         std::getline(std::cin, nombre);                 // Leer linea completa
+
+        // Validar que el objeto exista
+        Objeto* actual = primero;
+        while (actual) {
+            if (actual->getNombre() == nombre) {
+                salir = true;
+                break;
+            }
+            actual = actual->getSiguiente();
+        }
+
+        if (!salir) {
+            std::cout << "El objeto no existe" << std::endl;
+            return;
+        }
+        
         std::cout << "Ingrese la cantidad: ";
-        std::cin >> cantidad;
-        this->aumentarInventario(nombre, cantidad);     // Llamada a la funcion privada
+        std::string input;
+        std::cin >> input;
+        try
+        {
+            cantidad = std::stoi(input);                    // Si no convierte dispara el catch
+            this->aumentarInventario(nombre, cantidad);     // Llamada a la funcion privada para aumentar el inventario
+        }
+        catch(const std::exception& e)
+        {
+            std::cout << "Entrada no valida. Por favor, ingrese un numero valido." << std::endl;
+        }
+        
+        
     }
 
     void mostrarInventario() const { // Funcion para mostrar inventario por categoria
@@ -81,28 +111,42 @@ public:
 
         int eleccion;
         std::string categoria;
-        std::cin >> eleccion;
-        if (eleccion == 1)
+        std::string input;
+        std::cin >> input;
+        try
         {
-            categoria = "Chasis";
+            eleccion = std::stoi(input); // Si no convierte dispara el catch
+            if (eleccion == 1)
+            {
+                categoria = "Chasis";
+            }
+            else if (eleccion == 2)
+            {
+                categoria = "Mecanica";
+            }
+            else if (eleccion == 3)
+            {
+                categoria = "Electrica";
+            }
+            else if (eleccion == 4)
+            {
+                categoria = "Acabados";
+            }
+            else
+            {   
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "Opcion invalida" << std::endl;
+                return;
+            }
         }
-        else if (eleccion == 2)
-        {
-            categoria = "Mecanica";
-        }
-        else if (eleccion == 3)
-        {
-            categoria = "Electrica";
-        }
-        else if (eleccion == 4)
-        {
-            categoria = "Acabados";
-        }
-        else
-        {
-            std::cout << "Opcion invalida" << std::endl;
+        catch(const std::exception& e)
+        {   
+            std::system("cls");      // Limpiar la pantalla
+            std::cout << "Entrada no valida. Por favor, ingrese un numero valido." << std::endl;
             return;
         }
+        
+
 
         std::system("cls");      // Limpiar la pantalla
 
@@ -146,11 +190,11 @@ Inventario inventario;
 void cargarInventario(){ // Funcion para cargar el inventario con objetos
 
     // Agregar objetos al inventario (Estructuracion del chasis)
-    inventario.agregarObjeto("Puertas", "Chasis", 8);
-    inventario.agregarObjeto("Largueros", "Chasis", 7);
+    inventario.agregarObjeto("Puertas", "Chasis", 0);
+    inventario.agregarObjeto("Largueros", "Chasis", 0);
     inventario.agregarObjeto("Travesanos", "Chasis", 10);
     inventario.agregarObjeto("Laterales", "Chasis", 8);
-    inventario.agregarObjeto("Refuerzos", "Chasis", 8);
+    inventario.agregarObjeto("Refuerzos", "Chasis", 0);
 
     // Agregar objetos al inventario (Implementacion Mecanica)
     inventario.agregarObjeto("Motor", "Mecanica", 5);
@@ -181,7 +225,7 @@ void cargarInventario(){ // Funcion para cargar el inventario con objetos
     inventario.agregarObjeto("Espejos", "Acabados", 16);
 }
 
-bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada) {
+bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada) { // Funcion para restar objetos del inventario
     Objeto* actual = inventario.primero;
     while (actual) {
         if (actual->getNombre() == nombre) { 
@@ -199,6 +243,21 @@ bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int canti
         actual = actual->getSiguiente();
     }
     std::cout << "No se encontro " << nombre << std::endl;
+    return false; // El objeto no se encontró en la lista
+}
+
+bool estadoInventario(Inventario& inventario, const std::string& nombre, int cantidad) { // Funcion para restar objetos del inventario
+    Objeto* actual = inventario.primero;
+    while (actual) {
+        if (actual->getNombre() == nombre) { 
+            if (actual->getCantidad() >= cantidad) {
+                return true; // Si hay suficientes objetos
+            } else {
+                return false; // No  hay suficientes objetos
+            }
+        }
+        actual = actual->getSiguiente();
+    }
     return false; // El objeto no se encontró en la lista
 }
 
@@ -220,46 +279,70 @@ void mainInventario(){// Menu de opciones para el inventario
         std ::cout << " " << std::endl;
 
         std::cout << "Ingrese la opcion: ";
-        std::cin >> opcion;
+        std::string input;
+        std::cin >> input;
 
         // Limpiar la pantalla
         std::system("cls");
 
-        if (opcion == 1)
-        {// Variables locales para la crear un nuevo objeto
-            std::string nombre;
-            std::string categoria;
-            int cantidad;
+        try
+        {   opcion = std::stoi(input); // Si no convierte dispara el catch
 
-            std::cout << "Ingrese el nombre del objeto: ";
-            std::cin.ignore();                                     // Ignora el carácter de nueva línea anterior
+            if (opcion == 1)
+            {   
+                // Variables locales para la crear un nuevo objeto
+                std::string nombre;
+                std::string categoria;
+                int cantidad;
 
-            std::getline(std::cin, nombre);                        // Leer linea completa
-            std::cout << "Ingrese la categoria: ";
-            std::cin >> categoria;                                 // Leer categoria
-            std::cout << "Ingrese la cantidad: ";
-            std::cin >> cantidad;                                  // Leer cantidad
+                std::cout << "Ingrese el nombre del objeto: ";
+                std::cin.ignore();                                     // Ignora el carácter de nueva línea anterior
 
-            inventario.agregarObjeto(nombre, categoria, cantidad); // Llamada a la funcion para agregar un nuevo objeto
+                std::getline(std::cin, nombre);                        // Leer linea completa
+                std::cout << "Ingrese la categoria: ";
+                std::cin >> categoria;                                 // Leer categoria
 
-            std::cout << " " << std::endl;
-            std::cout << "Objeto agregado correctamente" << std::endl;
+                // Validar que la categoria exista
+                if (categoria != "Chasis" && categoria != "Mecanica" && categoria != "Electrica" && categoria != "Acabados") {
+                    std::cout << "La categoria no existe" << std::endl;
+                    return;
+                }
+
+                std::cout << "Ingrese la cantidad: ";
+                std::string input;
+                std::cin >> input;
+                try
+                {   
+                    cantidad = std::stoi(input); // Si no convierte dispara el catch
+                    inventario.agregarObjeto(nombre, categoria, cantidad); // Llamada a la funcion para agregar un nuevo objeto
+                    std::cout << " " << std::endl;
+                    std::cout << "Objeto agregado correctamente" << std::endl;
+                }
+                catch(const std::exception& e)
+                {
+                    std::cout << "Entrada no valida. Por favor, ingrese un numero valido." << std::endl;
+                } 
+            }
+            else if (opcion == 2)
+            {
+                inventario.aumentarInventario();                       // Llamada a la funcion para aumentar el inventario
+            }
+            else if (opcion == 3)
+            {
+                inventario.mostrarInventario();                        // Llamada a la funcion para mostrar el inventario
+            }
+            else if (opcion == 4)
+            {
+                salir = true;                                          // Salir del menu
+            }
+            else
+            {   
+                std::system("cls");      // Limpiar la pantalla
+                std::cout << "Opcion invalida" << std::endl;
+            }
         }
-        else if (opcion == 2)
-        {
-            inventario.aumentarInventario();                       // Llamada a la funcion para aumentar el inventario
-        }
-        else if (opcion == 3)
-        {
-            inventario.mostrarInventario();                        // Llamada a la funcion para mostrar el inventario
-        }
-        else if (opcion == 4)
-        {
-            salir = true;                                          // Salir del menu
-        }
-        else
-        {
-            std::cout << "Opcion invalida" << std::endl;
+        catch (const std::invalid_argument& e) {
+            std::cout << "Entrada no valida. Por favor, ingrese un numero valido." << std::endl;
         }
         
     } while (!salir);
