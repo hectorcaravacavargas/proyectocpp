@@ -431,7 +431,7 @@ void mostrarMenu() {
     bool salir = false;
 
     std::string nombre, apellido, tipoContrato, categoria, sector, nombreJefe, apellidoJefe, input;
-    int edad, diasTrabajados, feriado, especial, regular, horas, contrato, jefe;
+    int edad, diasTrabajados, feriado, especial, regular, horas, contrato, jefe, opcion;
     float salarioBase, complementosSalariales;
     bool esFeriado, diaEspecial, diaRegular, tieneJefe;
 
@@ -454,25 +454,17 @@ void mostrarMenu() {
         std::cout << "6. Consultar Salario" << std::endl;
         std::cout << "7. Mostrar Informacion de Empleados" << std::endl;
         std::cout << "8. Salir" << std::endl;
-        std::cout << " " << std::endl;
 
-        int opcion;
-        std::cout << "Elija una opcion: ";
-        std::cin >> opcion;
-
-        try
+        do
         {
-            if (opcion < 1 || opcion > 8)
-            {
-                throw std::invalid_argument("Opcion invalida.\n");
+            std::cout << "\nIngrese una opcion: "; std::cin >> input;
+            std::istringstream stream(input);
+            if (stream >> opcion) {
+                entradaValida = true;
+            } else {
+                std::cerr << "Error: debe ingresar un numero";
             }
-        }
-        catch(std::invalid_argument& e)
-        {
-            std::cerr << "Error: debe ingresar un numero !" << std::endl;
-            std::cin.clear();
-            std::cin.ignore();
-        }
+        } while (!entradaValida);
 
         switch (opcion) {
             case 1:
@@ -872,7 +864,7 @@ void mostrarMenu() {
 
             default:
                 std::system("cls");      // Limpiar la pantalla
-                std::cout << "Opción no válida. Intente de nuevo." << std::endl;
+                std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
                 break;
         }
     } while (!salir);
