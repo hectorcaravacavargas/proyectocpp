@@ -251,25 +251,18 @@ public:
     void modificarEmpleado(std::string nombre, std::string apellido, int edad, std::string tipoContrato, float salarioBase,
                       float complementosSalariales, std::string categoria, std::string sector, Empleado* jefe) {
         Empleado* aux = inicio;
-        while (aux != nullptr) {
-            if (aux->getNombre() == nombre && aux->getApellido() == apellido) {
+            aux->setNombre(nombre);
+            aux->setApellido(apellido);
+            aux->setEdad(edad);
+            aux->setTipoContrato(tipoContrato);
+            aux->setSalarioBase(salarioBase);
+            aux->setComplementosSalariales(complementosSalariales);
+            aux->setCategoria(categoria);
+            aux->setSector(sector);
+            aux->setJefe(jefe);
 
-                aux->setNombre(nombre);
-                aux->setApellido(apellido);
-                aux->setEdad(edad);
-                aux->setTipoContrato(tipoContrato);
-                aux->setSalarioBase(salarioBase);
-                aux->setComplementosSalariales(complementosSalariales);
-                aux->setCategoria(categoria);
-                aux->setSector(sector);
-                aux->setJefe(jefe);
-
-                std::cout << "Empleado " << nombre << " " << apellido << " modificado exitosamente." << std::endl;
-                return;
-            }
-            aux = aux->getSig();
-        }
-        std::cout << "Empleado con nombre " << nombre << " y apellido: " << apellido << " no encontrado." << std::endl;
+            std::cout << "Empleado " << nombre << " " << apellido << " modificado exitosamente." << std::endl;
+            return;
     }
 
     // METODO PARA ASIGNAR EL JEFE A UNA PERSONA;
@@ -473,6 +466,8 @@ void mostrarMenu() {
                     std::cout << "Ingrese el nombre: "; std::cin >> nombre;
                     std::cout << "Ingrese el apellido: "; std::cin >> apellido;
 
+                    entradaValida = false; input = "";
+
                     do {
                         std::cout << "Ingrese la edad: "; std::cin >> input;
                         std::istringstream stream(input);
@@ -481,7 +476,10 @@ void mostrarMenu() {
                                 std::cerr << "Error: La edad no puede ser negativa." << '\n';
                             } else if (edad < 18) {
                                 std::cerr << "Error: La edad debe ser mayor o igual a 18." << '\n';
-                            } else {
+                            } else if (edad >= 65) {
+                                std::cerr << "Error: La edad debe ser menor a 65." << '\n';
+                            }
+                            else {
                                 entradaValida = true;
                             }
                         } else {
