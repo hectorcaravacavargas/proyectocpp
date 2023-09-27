@@ -5,9 +5,12 @@
 #include "inventario.h"
 #include "produccion.h"
 
-
-// AQUI IRAN LOS USOS DE TODAS LAS CLASES;
-int main() {
+/**
+ * @brief Funcion principal del programa
+ * 
+ * @return int 
+ */
+int main() { // Funcion principal del programa
     // Cargar datos quemdos
     cargarInventario();
     cargarProduccion();

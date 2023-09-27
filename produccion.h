@@ -2,7 +2,7 @@
 #include <string>
 
 class Carro
-{
+{ // Clase con los atributos de un carro
 private:
 private:
     int numero_chasis;
@@ -13,11 +13,6 @@ private:
 public:
     Carro(int numero_chasis, const std::string &etapa, int puertas, const std::string &color)
         : numero_chasis(numero_chasis), etapa(etapa), puertas(puertas), color(color) {}
-
-    void IniciarEtapaChasis()
-    {
-        // Implementa el código para iniciar la etapa del chasis aquí
-    }
 
     int getNumeroChasis() const
     { // Método para obtener el número de chasis
@@ -48,7 +43,7 @@ public:
 };
 
 struct nodo
-{
+{ // Estructura para los nodos de la lista circular
     Carro *carro;
     nodo *sig;
 
@@ -57,10 +52,16 @@ struct nodo
 
 class ListaCircularCarros
 { // Clase para la lista circular de carros
+
 private:
     nodo *primero = NULL;
 
 public:
+    /**
+     * @brief Metodo que agrega un nuevo carro a la lista circular
+     * 
+     * @param nuevo_carro 
+     */
     void agregar_carro(Carro *nuevo_carro)
     { // Metodo para agregar un nuevo carro a la lista
         nodo *nuevo_nodo = new nodo(nuevo_carro);
@@ -82,6 +83,10 @@ public:
         }
     }
 
+    /**
+     * @brief Muestra una lista de todos los carros
+     * 
+     */
     void mostrarCarros()
     { // Metodo para mostrar todos los carros de la lista
         if (primero == NULL)
@@ -101,6 +106,10 @@ public:
         } while (actual != primero);
     }
 
+    /**
+     * @brief Funcion para crear un nuevo auto personalizado desde teclado
+     * 
+     */
     void crearCarro()
     { // Metodo para crear un nuevo carro en etapa 0
         int numero_chasis;
@@ -201,6 +210,12 @@ public:
         std::cout << "Carro con chasis " << numero_chasis << " 'CREADO EXITOSAMENTE'" << std::endl;
     }
 
+    /**
+     * @brief Metodo para averiguar el numero de puertas de un auto
+     * 
+     * @param numeroChasis 
+     * @return int 
+     */
     int buscarPuertas(int numeroChasis)
     { // Metodo que retorna la cantidad de puertas del auto
         nodo *actual = primero;
@@ -215,7 +230,12 @@ public:
         } while (actual != primero);
         return 0;
     }
-
+    /**
+     * @brief Metodo para averiguar el color de un auto
+     * 
+     * @param numeroChasis 
+     * @return std::string 
+     */
     std::string busarColor(int numeroChasis)
     { // Metodo que retorna el color del auto
         nodo *actual = primero;
@@ -231,6 +251,12 @@ public:
         return 0;
     }
 
+    /**
+     * @brief Metodo para averiguar la etapa de un auto
+     * 
+     * @param numeroChasis 
+     * @return std::string 
+     */
     std::string busarEtapa(int numeroChasis)
     { // Metodo que retorna la etapa del auto
         nodo *actual = primero;
@@ -246,6 +272,12 @@ public:
         return 0;
     }
 
+    /**
+     * @brief Metodo para avanzar la etapa de un auto
+     * 
+     * @param numeroChasis 
+     * @param etapa 
+     */
     void cambiarDetapa(int numeroChasis, std::string etapa)
     { // Metodo para cambiar la etapa de un auto
         nodo *actual = primero;
@@ -260,6 +292,10 @@ public:
         } while (actual != primero);
     }
 
+    /**
+     * @brief Metodo para mostrar la etapa de un auto
+     * 
+     */
     void verEtapa()
     { // Metodo para ver la etapa de un auto en especifico por numero de chasis
         int numeroChasis;
@@ -319,18 +355,23 @@ public:
     };
 };
 
-void estadoMateriales(){
-    
-
-}
-
+/**
+ * @brief Funcion para mostrar alerta de que no hay suficientes elementos
+ * 
+ */
 void elementoIsufisintes()
-{ // Funcion para mostrar que no se puede avanzar a la siguiente etapa
+{ 
     std::cout << " " << std::endl;
     std::cout << "Agregue los elementos necesarios para avanzar a la siguiente etapa" << std::endl;
     std::cout << " " << std::endl;
 };
 
+/**
+ * @brief Funcion para validar que hay suficientes elementos en el inventario para avanzar a etapa chasis
+ * 
+ * @param puertas
+ * @return bool
+ */
 bool estadoChasis(int puertas)
 {
     if (!estadoInventario(inventario, "Refuerzos", 2))
@@ -356,6 +397,11 @@ bool estadoChasis(int puertas)
     return true;
 }
 
+/**
+ * @brief Funcion para validar que hay suficientes elementos en el inventario para avanzar a etapa mecanica
+ * 
+ * @return bool
+ */
 bool estadoMecanica()
 {
     if (!estadoInventario(inventario, "Motor", 1))
@@ -389,6 +435,11 @@ bool estadoMecanica()
     return true;
 }
 
+/**
+ * @brief Funcion para validar que hay suficientes elementos en el inventario para avanzar a etapa electrica
+ * 
+ * @return bool
+ */
 bool estadoElectrica()
 {
     if (!estadoInventario(inventario, "Bateria", 1))
@@ -424,6 +475,12 @@ bool estadoElectrica()
     return true;
 }
 
+/**
+ * @brief Funcion para validar que hay suficientes elementos en el inventario para avanzar a etapa acabados
+ * 
+ * @param color 
+ * @return bool
+ */
 bool estadoAcabado(std::string color)
 {
     if (!estadoInventario(inventario, "Asientos", 5))
@@ -470,6 +527,11 @@ bool estadoAcabado(std::string color)
     return true;
 }
 
+/**
+ * @brief Funcion la cual resta los elemnetos del inventario para avanzar a la etapa chasis
+ * 
+ * @param puertas 
+ */
 void etapaChasis(int puertas)
 { // Funcion para pasar un auto a la etapa de chasis
     if (!cantidadObjeto(inventario, "Refuerzos", 2))
@@ -499,6 +561,10 @@ void etapaChasis(int puertas)
     }
 }
 
+/**
+ * @brief Funcion la cual resta los elemnetos del inventario para avanzar a la etapa mecanica
+ * 
+ */
 void etapaMecanica()
 { // Funcion para pasar un auto a la etapa de mecanica
     if (!cantidadObjeto(inventario, "Motor", 1))
@@ -538,6 +604,10 @@ void etapaMecanica()
     }
 };
 
+/**
+ * @brief Funcion la cual resta los elemnetos del inventario para avanzar a la etapa electrica
+ * 
+ */
 void etapaElectrica()
 { // Funcion para pasar un auto a la etapa de electrica
     if (!cantidadObjeto(inventario, "Bateria", 1))
@@ -579,6 +649,11 @@ void etapaElectrica()
     }
 };
 
+/**
+ * @brief Funcion la cual resta los elemnetos del inventario para avanzar a la etapa acabados
+ * 
+ * @param color 
+ */
 void etapaAcabado(std::string color)
 { // Funcion para pasar un auto a la etapa de acabados
     if (!cantidadObjeto(inventario, "Asientos", 5))
@@ -632,6 +707,10 @@ void etapaAcabado(std::string color)
     }
 };
 
+/**
+ * @brief Funcion que espera un enter para continuar el programa
+ * 
+ */
 void enterToExit()
 { // Funcion que espera que se presione "ENTER" para continuar
     std::cout << "Presiona Enter para salir..." << std::endl;
@@ -646,8 +725,12 @@ void enterToExit()
         }
     }
 };
-ListaCircularCarros lista_carros;
+ListaCircularCarros lista_carros; // Instancia de la lista circular de carros
 
+/**
+ * @brief Funcion para cargar datos quemados en la lista circular de carros
+ * 
+ */
 void cargarProduccion()
 {
 
@@ -660,6 +743,10 @@ void cargarProduccion()
     lista_carros.agregar_carro(carro3);
 };
 
+/**
+ * @brief Main secundario para manejar las opciones dentro de porduccion  
+ * 
+ */
 void mainProduccion()
 { // Menu de opciones para la produccion
     std::string colorTemp;

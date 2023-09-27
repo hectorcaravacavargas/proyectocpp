@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdlib> // Para limpiar la pantalla
 
-class Objeto {
+class Objeto { // Clase para crear objetos del inventario
 public:
     Objeto(const std::string& nombre, const std::string& categoria, int cantidad)
         : nombre(nombre), categoria(categoria), cantidad(cantidad), siguiente(nullptr) {}
@@ -38,19 +38,31 @@ private:
     Objeto* siguiente;
 };
 
-class Inventario {
+class Inventario { // Clase para crear el inventario de objetos
 public:
     Inventario() : primero(nullptr) {}
 
+    /**
+     * @brief Constructor de la clase Inventario
+     * 
+     * @param nombre 
+     * @param categoria 
+     * @param cantidad 
+     */
     void agregarObjeto(const std::string& nombre, const std::string& categoria, int cantidad) { // Funcion publica para agregar objetos al inventario
         Objeto* nuevoObjeto = new Objeto(nombre, categoria, cantidad);
         nuevoObjeto->setSiguiente(primero);
         primero = nuevoObjeto;
     }
 
+    // Clases amigas
     friend bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada);
     friend bool estadoInventario(Inventario& inventario, const std::string& nombre, int cantidad);
 
+    /**
+     * @brief Metodo para aumentar el inventario de un objeto ya existente
+     * 
+     */
     void aumentarInventario() { // Funcion publica para aumentar el inventario ya existente
         bool salir = false;
 
@@ -93,6 +105,10 @@ public:
         
     }
 
+    /**
+     * @brief Metodo para mostrar el inventario por categoria
+     * 
+     */
     void mostrarInventario() const { // Funcion para mostrar inventario por categoria
         // Mostrar las categorias
         std::cout << "REVISION DE INVENTARIO" << std::endl;
@@ -167,6 +183,12 @@ public:
 private:
     Objeto* primero;
 
+    /**
+     * @brief Metodo privado para aumentar el inventario de un objeto ya existente
+     * 
+     * @param nombre 
+     * @param cantidad 
+     */
     void aumentarInventario(const std::string& nombre, int cantidad) { // Funcion privada para aumentar el inventario ya existente
         Objeto* actual = primero;
         while (actual) {
@@ -185,8 +207,12 @@ private:
 
 };
 
-Inventario inventario;
+Inventario inventario; // Instancia de la clase Inventario
 
+/**
+ * @brief Funcion para cargar el inventario con objetos
+ * 
+ */
 void cargarInventario(){ // Funcion para cargar el inventario con objetos
 
     // Agregar objetos al inventario (Estructuracion del chasis)
@@ -225,6 +251,14 @@ void cargarInventario(){ // Funcion para cargar el inventario con objetos
     inventario.agregarObjeto("Espejos", "Acabados", 16);
 }
 
+/**
+ * @brief Funcion para restar objetos del inventario
+ * 
+ * @param inventario 
+ * @param nombre 
+ * @param cantidadUtilizada 
+ * @return bool
+ */
 bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int cantidadUtilizada) { // Funcion para restar objetos del inventario
     Objeto* actual = inventario.primero;
     while (actual) {
@@ -246,6 +280,14 @@ bool cantidadObjeto(Inventario& inventario, const std::string& nombre, int canti
     return false; // El objeto no se encontró en la lista
 }
 
+/**
+ * @brief Funcion para validar si hay suficientes objetos en el inventario
+ * 
+ * @param inventario 
+ * @param nombre 
+ * @param cantidad 
+ * @return bool
+ */
 bool estadoInventario(Inventario& inventario, const std::string& nombre, int cantidad) { // Funcion para restar objetos del inventario
     Objeto* actual = inventario.primero;
     while (actual) {
@@ -261,6 +303,10 @@ bool estadoInventario(Inventario& inventario, const std::string& nombre, int can
     return false; // El objeto no se encontró en la lista
 }
 
+/**
+ * @brief Menu secundario para mostrar las opciones del inventario
+ * 
+ */
 void mainInventario(){// Menu de opciones para el inventario
     bool salir = false;
 

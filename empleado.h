@@ -5,7 +5,7 @@
 
 // NOMBRE DE LA EMPRESA: LuxeHeJos SA
 
-struct ConsultarSalario {
+struct ConsultarSalario { // Estrucutra para consultar el salario
     int horasLaboradas, diasTrabajados;
     bool feriados, turnoEspecial, horarioRegular;
     std::string categoria, tipoContrato;
@@ -22,7 +22,7 @@ struct ConsultarSalario {
     }
 };
 
-class Empleado {
+class Empleado { // Clase Empleado
 private:
     // ATRIBUTOS BASICOS DEL EMPLEADO
     std::string nombre, apellido, tipoContrato; // TIPO DE CONTRATO PUEDE SER HORA O JORNADA COMPLETA
@@ -153,7 +153,10 @@ public:
         ant = _ant;
     }
 
-    // METODO IMPRIMIR INFORMACION DEL EMPLEADO
+    /**
+     * @brief Metodo para imprimir la informacion de un empleado
+     * 
+     */
     void imprimirInformacion() {
         std::cout << "Nombre: " << nombre << std::endl;
         std::cout << "Apellido: " << apellido << std::endl;
@@ -170,7 +173,11 @@ public:
         }
     }
 
-    // METODO PARA ACTUALIZAR LOS DATOS DEL EMPLEADO;
+    /**
+     * @brief Metodo para actualizar la informacion de un empleado
+     * 
+     * @param nuevoEmpleado 
+     */
     void actualizarEmpleado(const Empleado& nuevoEmpleado) {
 
         nombre = nuevoEmpleado.nombre;
@@ -189,7 +196,7 @@ public:
     Empleado *ant = nullptr;
 };
 
-class ListEmpleados {
+class ListEmpleados { // Clase Lista Empleados
 private:
     Empleado* inicio;
     Empleado* fin;
@@ -197,7 +204,19 @@ private:
 public:
     ListEmpleados() : inicio(nullptr), fin(nullptr) {}
 
-    // METODO PARA INSERTAR EMPLEADOS
+    /**
+     * @brief Metodo para agregar empleados a la lista
+     * 
+     * @param nombre 
+     * @param apellido 
+     * @param _edad 
+     * @param _tipoContrato 
+     * @param _salarioBase 
+     * @param _complementosSalariales 
+     * @param _categoria 
+     * @param _sector 
+     * @param _jefe 
+     */
     void agregarEmpleados(std::string nombre, std::string apellido, int _edad, std::string _tipoContrato, float _salarioBase,
         float _complementosSalariales, std::string _categoria, std::string _sector, Empleado* _jefe) {
 
@@ -248,6 +267,19 @@ public:
         return nullptr; // No se encontró ningún empleado con el nombre y apellido proporcionados
     }
 
+    /**
+     * @brief Metodo para modificar los datos de un empleado
+     * 
+     * @param nombre 
+     * @param apellido 
+     * @param edad 
+     * @param tipoContrato 
+     * @param salarioBase 
+     * @param complementosSalariales 
+     * @param categoria 
+     * @param sector 
+     * @param jefe 
+     */
     void modificarEmpleado(std::string nombre, std::string apellido, int edad, std::string tipoContrato, float salarioBase,
                       float complementosSalariales, std::string categoria, std::string sector, Empleado* jefe) {
         Empleado* aux = inicio;
@@ -265,7 +297,14 @@ public:
             return;
     }
 
-    // METODO PARA ASIGNAR EL JEFE A UNA PERSONA;
+    /**
+     * @brief Metodo para asignar un jefe a un empleado
+     * 
+     * @param nombreEmpleado 
+     * @param apellidoEmpleado 
+     * @param nombreJefe 
+     * @param apellidoJefe 
+     */
     void asignarJefe(std::string nombreEmpleado, std::string apellidoEmpleado, std::string nombreJefe, std::string apellidoJefe) {
         // BUSCAR EL EMPLEADO POR NOMBRE Y APELLIDO PARA VERIFICAR CON MAYOR SEGURIDAD SI ESTA ESTA PERSONA;
         Empleado* empleado = buscarEmpleadoPorNombreApellido(nombreEmpleado, apellidoEmpleado);
@@ -289,7 +328,12 @@ public:
         std::cout << "Se ha asignado a " << nombreEmpleado << " " << apellidoEmpleado << " el jefe " << nombreJefe << " " << apellidoJefe << "." << std::endl;
     }
 
-    // METODO PARA ELIMINAR EMPLEADOS;
+    /**
+     * @brief Metodo para eliminar un empleado
+     * 
+     * @param nombre 
+     * @param apellido 
+     */
     void eliminarEmpleado(std::string nombre, std::string apellido) {
         Empleado* aux = inicio;
 
@@ -324,7 +368,10 @@ public:
         std::cout << "Empleado con nombre " << nombre << " y apellido: " << apellido << " no encontrado." << std::endl;
     }
 
-    // METODO ORDENAR POR EDAD;
+    /**
+     * @brief Metodo para ordenar los empleados por edad
+     * 
+     */
     void ordenarPorEdad() {
         Empleado* actual = inicio;
         Empleado* siguiente = nullptr;
@@ -356,7 +403,10 @@ public:
         }
     }
 
-    // METODO PARA ORDENRA POR APELLIDOS;
+    /**
+     * @brief Metodo para ordenar los empleados por apellidos
+     * 
+     */
     void ordenarPorApellidos() {
         Empleado* actual = inicio;
         Empleado* siguiente = nullptr;
@@ -377,7 +427,11 @@ public:
         }
     }
 
-    // METODO CONSULTAR SALARIO
+    /**
+     * @brief Metodo para consultar el salario de un empleado
+     * 
+     * @param consulta 
+     */
     void consultarSalario(const ConsultarSalario& consulta) {
         Empleado* aux = inicio;
         while (aux != nullptr) {
@@ -411,6 +465,10 @@ public:
 
 ListEmpleados listaEmpleados;
 
+/**
+ * @brief Funcion para cargar los empleados
+ * 
+ */
 void cargarEmpleados () {
     listaEmpleados.agregarEmpleados("Juan", "Perez", 20, "Horas", 5500.0, 100.0, "Supervisor", "Ventas", nullptr);
     listaEmpleados.agregarEmpleados("Maria", "Gonzalez", 25, "Jornada Completa", 1000.0, 12.0, "Administradora", "Ventas", nullptr);
@@ -420,6 +478,10 @@ void cargarEmpleados () {
     listaEmpleados.agregarEmpleados("Luis", "Diaz", 45, "Jornada Completa", 11000.0, 47.0, "Contador", "Marketing", nullptr);
 }
 
+/**
+ * @brief Menu secundario  para mostrar las opciones de los empleados
+ * 
+ */
 void mostrarMenu() {
     bool salir = false;
 
