@@ -177,6 +177,7 @@ public:
      * @brief Metodo para actualizar la informacion de un empleado
      * 
      * @param nuevoEmpleado 
+     * Esta funcion es usado en las funciones de ordenar las listas
      */
     void actualizarEmpleado(const Empleado& nuevoEmpleado) {
 
@@ -191,7 +192,7 @@ public:
         jefe = nuevoEmpleado.jefe;
     }
 
-    // PUNTERO SIGUIENTE
+    // PUNTERO SIGUIENTE Y PUNTERO ANT, INICIALIZADOS EN NULL;
     Empleado *sig = nullptr;
     Empleado *ant = nullptr;
 };
@@ -222,7 +223,7 @@ public:
 
         Empleado* nuevo = new Empleado("", "", 0, "", 0.0, 0.0, "", "", nullptr); // Crear una instancia de Empleado
 
-        // Usar los setters para asignar valores
+        // USAR SETTERS PARA ASIGNAR LOS VALORES
         nuevo->setNombre(nombre);
         nuevo->setApellido(apellido);
         nuevo->setEdad(_edad);
@@ -260,7 +261,7 @@ public:
         Empleado* aux = inicio;
         while (aux != nullptr) {
             if (aux->getNombre() == nombre.c_str() && aux->getApellido() == apellido) {
-                return aux; // Devuelve el puntero al empleado encontrado
+                return aux; // Devuelve el puntero si se encuentra el empleado encontrado
             }
             aux = aux->getSig();
         }
@@ -304,12 +305,15 @@ public:
      * @param apellidoEmpleado 
      * @param nombreJefe 
      * @param apellidoJefe 
+     *
+     * Recibe por strings los nombres y los busca en la lista
      */
     void asignarJefe(std::string nombreEmpleado, std::string apellidoEmpleado, std::string nombreJefe, std::string apellidoJefe) {
         // BUSCAR EL EMPLEADO POR NOMBRE Y APELLIDO PARA VERIFICAR CON MAYOR SEGURIDAD SI ESTA ESTA PERSONA;
         Empleado* empleado = buscarEmpleadoPorNombreApellido(nombreEmpleado, apellidoEmpleado);
 
         if (empleado == nullptr) {
+            // SI NO EXISTE EL EMPLEADO SE MUESTRA A CONTINUACION
             std::cout << "El empleado " << nombreEmpleado << " " << apellidoEmpleado << " no se encuentra en la lista." << std::endl;
             return;
         }
@@ -329,7 +333,7 @@ public:
     }
 
     /**
-     * @brief Metodo para eliminar un empleado
+     * @brief Metodo para eliminar un empleado de la lista
      * 
      * @param nombre 
      * @param apellido 
@@ -338,10 +342,11 @@ public:
         Empleado* aux = inicio;
 
         while (aux != nullptr) {
-            int val = aux->getNombre().compare(nombre);
+            int val = aux->getNombre().compare(nombre); // SE USA LA FUNCION COMPARE PARA TENER CERTEZA
             int val2 = aux->getApellido().compare(apellido);
 
             if (val == 0 && val2 == 0) {
+                // SI SE ENCUENTRA EL EMPLEADO, SE ELIMINA DE LA LISTA
                 Empleado* anterior = aux->getAnterior();
                 Empleado* siguiente = aux->getSig();
 
@@ -369,7 +374,7 @@ public:
     }
 
     /**
-     * @brief Metodo para ordenar los empleados por edad
+     * @brief Metodo para ordenar los empleados por edad, los ordena de menor a mayor, no se imprime la lista
      * 
      */
     void ordenarPorEdad() {
@@ -390,7 +395,6 @@ public:
                 siguiente = actual->getSig();
 
                 if (actual->getEdad() > siguiente->getEdad()) {
-                    // INTERCAMBIAR LOS EMPLEADOS CON EL MÉTODO SWAP
                     Empleado temp = *actual;  // Copia temporal para el intercambio
                     actual->actualizarEmpleado(*siguiente);
                     siguiente->actualizarEmpleado(temp);
@@ -404,7 +408,7 @@ public:
     }
 
     /**
-     * @brief Metodo para ordenar los empleados por apellidos
+     * @brief Metodo para ordenar los empleados por apellidos, los ordena en orden alfabetico
      * 
      */
     void ordenarPorApellidos() {
@@ -416,7 +420,6 @@ public:
 
             while (siguiente != nullptr) {
                 if (actual->getApellido()[0] > siguiente->getApellido()[0]) {
-                    // INTERCAMBIA LOS EMPLEADOS CON EL MÉTODO SWAP
                     Empleado temp = *actual;  // Copia temporal para el intercambio
                     actual->actualizarEmpleado(*siguiente);
                     siguiente->actualizarEmpleado(temp);
